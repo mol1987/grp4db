@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KockTerminal_JC", "KockTerminal_JC.csproj", "{B7A2258D-18FE-4312-B380-43D87FD20886}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7A2258D-18FE-4312-B380-43D87FD20886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7A2258D-18FE-4312-B380-43D87FD20886}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7A2258D-18FE-4312-B380-43D87FD20886}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7A2258D-18FE-4312-B380-43D87FD20886}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {70DA994B-E88F-429B-87EE-AB6D0CED883B}
+	EndGlobalSection
+EndGlobal
