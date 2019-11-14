@@ -14,6 +14,7 @@ namespace CostumerTerminalFinished
         string italiensk = "Italiensk botten";
         string amerikansk = "Amerikansk botten";
 
+        // Ritar ut en välkomstskärm
         public void StartOrder()
         {
 
@@ -39,6 +40,7 @@ namespace CostumerTerminalFinished
             }
         } // end StartOrder();
 
+        // Funktion som ritar ut menyn med alla tillgängliga maträtter
         public void DrawFoodMenu()
         {
             Console.Clear();
@@ -104,6 +106,7 @@ namespace CostumerTerminalFinished
             }
         }// end DrawFoodMenu();
 
+        // funktion som ritar ut Pizzamenyn
         public void DrawPizzaMenu()
         {
             Console.Clear();
@@ -160,6 +163,7 @@ namespace CostumerTerminalFinished
             }
         } //end drawPizzaMenu();
 
+        // Funktion som låter användaren välja botten och sparar resultatet till pizzalistan
         public void DrawPizzaBottomMenu(string pizza)
         {
             Console.Clear();
@@ -275,6 +279,7 @@ namespace CostumerTerminalFinished
             }
         } //end DrawPizzaBottomMenu();
 
+        // Funktion som ritar ut en meny med valmöjlighet att bekräfta order eller ändra innehåll
         public void DrawExtras()
         {
             Console.Clear();
@@ -330,6 +335,7 @@ namespace CostumerTerminalFinished
             }
         } // end DrawExtras();
 
+        // Funktion som ritar ut Pastamenyn
         public void DrawPastaMenu()
         {
             Console.Clear();
@@ -380,6 +386,7 @@ namespace CostumerTerminalFinished
             }
         } //end DrawPastaMenu
 
+        // Funktion som ritar ut Dryckesmenyn
         public void DrawDrinksMenu()
         {
             Console.Clear();
@@ -437,6 +444,7 @@ namespace CostumerTerminalFinished
             }
         } //end DrawDrinksMenu();
 
+        // Funktion som ritar ut salladsmenyn
         public void DrawSaladMenu()
         {
             Console.Clear();
@@ -487,6 +495,7 @@ namespace CostumerTerminalFinished
             }
         } // end DrawSalad
 
+        // Funktion som ritar ut nuvarande order
         public void PrintOrder()
         {
             if(pizzas.Count == 0 && pastas.Count == 0 && salads.Count == 0 && drinks.Count == 0)
@@ -525,6 +534,7 @@ namespace CostumerTerminalFinished
             }
         } // End Printorder
 
+        // Funktion som ritar ut att en order har lagts till
         public void DrawConfirmationScreen()
         {
             Console.Clear();
@@ -567,6 +577,7 @@ namespace CostumerTerminalFinished
 
         } //end DrawConfirmationScreen();
 
+        // Funktion som ritar ut nuvarande order samt totalpris
         public void DrawCurrentOrder()
         {
             Console.Clear();
@@ -610,7 +621,6 @@ namespace CostumerTerminalFinished
                         correctKey = true;
                         break;
 
-
                     default:
                         Console.Clear();
 
@@ -632,6 +642,7 @@ namespace CostumerTerminalFinished
             }
         } //end DrawCurrentOrder();
 
+        // Funktion som ritar ut alla tillgängliga extra ingredienser till pizza
         public void DrawAddPieces()
         {
             Console.Clear();
@@ -710,7 +721,7 @@ namespace CostumerTerminalFinished
             }
         } //end DrawAddPieces();
 
-
+        // Funktion som ritar ut order och totalkostnad, och låter användaren betala eller gå tillbaka / ändra något
         public void DrawPayment()
         {
             Console.Clear();
@@ -803,6 +814,7 @@ namespace CostumerTerminalFinished
             return ordernumber.Next(1, 100);
         }
 
+        // Funktion som ritar ut order, totalsumma och ett ordernummer
         public void DrawReceipt()
         {
             Console.WriteLine("Tack för din betalning!");
@@ -820,6 +832,7 @@ namespace CostumerTerminalFinished
             StartOrder();
         } //end DrawReceipt();
 
+        // Funktion som går igenom pizza,pasta,salad och drink list och låter användaren ta bort det valda objektet
         public void DrawRemoveOrder()
         {
             Console.Clear();
@@ -906,6 +919,7 @@ namespace CostumerTerminalFinished
                 }
         } //end DrawRemoveOrder();
 
+        // Funktion som går igenom pizza listan och skriver ut innehåll + ingredienser, användaren får välja vilken ingrediens som ska tas bort
         public void DrawRemovePieces(int index)
         {
             Console.Clear();
@@ -969,6 +983,7 @@ namespace CostumerTerminalFinished
             }
         } //end DrawRemovePieces();
 
+        // Funktion som ritar ut att ett val har tagits bort
         public void DrawConfirmRemoval()
         {
             Console.Clear();
