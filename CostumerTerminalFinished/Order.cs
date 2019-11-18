@@ -1006,8 +1006,8 @@ namespace BeställningsTerminal
                 else if (userChoice == 1 && normalOrExtra == "extra")
                 {
                     pizzas[pizzaIndex].RemoveExtraIngredient(ingredientIndex);
-                    DrawExtras();
                     totalPrice -= 5;
+                    DrawExtras();
                 }
 
                 else if (userChoice == 2)

@@ -27,7 +27,7 @@ namespace BeställningsTerminal
         {
             "1. Bekräfta och gå till betalning",
             "2. Fortsätt handla",
-            "3. Ta bort innehåll\n",
+            "3. Ta bort produkt\n",
 
             "-------------",
             "4. Avsluta"
