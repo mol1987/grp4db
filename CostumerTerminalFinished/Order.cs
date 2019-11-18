@@ -325,6 +325,8 @@ namespace BeställningsTerminal
                         }
 
                     case '4':
+                        totalPrice -= pizzas[pizzas.Count - 1].price;
+                        pizzas.RemoveAt(pizzas.Count - 1);
                         CurrentOrder.RemoveAt(CurrentOrder.Count - 1);
                         DrawPizzaMenu();
                         correctKey = true;
