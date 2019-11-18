@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CostumerTerminalFinished
+namespace BeställningsTerminal
 {
     public class Pizza
     {
