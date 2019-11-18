@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KockTerminal_JC", "KockTerm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KundensTerminal", "KundensTerminal\KundensTerminal.csproj", "{3479117F-EE95-43C8-BD1F-46AC0CB219FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CostumerTerminalFinished", "CostumerTerminalFinished\CostumerTerminalFinished.csproj", "{64EE902D-BAE8-4EDD-B990-0AE58B88E704}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeställningsTerminal", "CostumerTerminalFinished\BeställningsTerminal.csproj", "{64EE902D-BAE8-4EDD-B990-0AE58B88E704}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderTerminal_JC", "OrderTerminal_JC\OrderTerminal_JC.csproj", "{C20CE3AA-60DE-4A58-93A4-BAD31A403093}"
 EndProject
