@@ -40,16 +40,24 @@ namespace BeställningsTerminal
             price += 5;
         }
 
+        public int CountIngredients()
+        {
+            int counter = IngredientList.Count + ExtraIngredientList.Count;
+
+            return counter;
+        }
+
         public void RemoveIngredient(int index)
         {
-            IngredientList.Remove(IngredientList[index - 1]);
+            IngredientList.RemoveAt(index-1);
         }
 
         public void RemoveExtraIngredient(int index)
         {
-            ExtraIngredientList.Remove(ExtraIngredientList[index - 1]);
+            ExtraIngredientList.RemoveAt(index-1);
             price -= 5;
         }
+
 
         public string ShowIngredients()
         {
@@ -65,7 +73,7 @@ namespace BeställningsTerminal
 
                 else
                 {
-                    ingredients += $"{ingredient}, ";
+                    ingredients += $"{ingredient} ";
                 }
             }
 
@@ -81,10 +89,9 @@ namespace BeställningsTerminal
             {
                 if (extras == ExtraIngredientList[ExtraIngredientList.Count - 1])
                 {
-                    extraIngredients += $"+{extras}";
+                    extraIngredients += $"+{extras} ";
                 }
                
-
                 else
                 {
                     extraIngredients += $"+{extras} ";

@@ -309,9 +309,20 @@ namespace BeställningsTerminal
                         break;
 
                     case '3':
-                        DrawRemovePieces(pizzas.Count - 1);
-                        correctKey = true;
-                        break;
+                        if (pizzas[pizzas.Count - 1].CountIngredients() == 0)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Din pizza har inga ingredienser");
+                            System.Threading.Thread.Sleep(750);
+                            DrawExtras();
+                            break;
+                        }
+                        else
+                        {
+                            DrawRemovePieces(pizzas.Count - 1);
+                            correctKey = true;
+                            break;
+                        }
 
                     case '4':
                         CurrentOrder.RemoveAt(CurrentOrder.Count - 1);
@@ -928,27 +939,18 @@ namespace BeställningsTerminal
 
             int ingredientCounter = 0;
 
-            string ingredients = pizzas[index].ShowIngredients();
-            string[] ingredientArray = ingredients.Split(' ');
-
-            foreach (string item in ingredientArray)
+            foreach(string ingredient in pizzas[index].IngredientList)
             {
                 ingredientCounter++;
-                Console.WriteLine(ingredientCounter + ". " + item);
+                Console.WriteLine(ingredientCounter + ". " + ingredient);
             }
 
-            if (pizzas[index].ShowExtraIngredients().Length > 0)
+            if(pizzas[index].ExtraIngredientList.Count > 0)
             {
-                string extraIngredients = pizzas[index].ShowExtraIngredients();
-                string[] extraIngredientArray = extraIngredients.Split(' ');
-
-                foreach (string item in extraIngredientArray)
+                foreach(string extraIngredient in pizzas[index].ExtraIngredientList)
                 {
-                    if (extraIngredientArray.Length > 0)
-                    {
-                        ingredientCounter++;
-                        Console.WriteLine(ingredientCounter + ". " + item);
-                    }
+                    ingredientCounter++;
+                    Console.WriteLine(ingredientCounter + ". " + extraIngredient);
                 }
             }
 
@@ -961,17 +963,16 @@ namespace BeställningsTerminal
 
                 for(int i = 0; i <= ingredientCounter; i++)
                 {
-                    if(userChoice == i && userChoice <= ingredientArray.Length)
+                    // ta bort basingredienser
+                    if(userChoice == i && userChoice <= pizzas[index].IngredientList.Count)
                     {
-                        pizzas[index].RemoveIngredient(userChoice);
-                        DrawExtras();
+                        ConfirmRemoval(pizzas[index].IngredientList, index, userChoice, "normal");
                     }
 
-                    else if(userChoice == i && userChoice > ingredientArray.Length)
+                    // ta bort extra ingredienser
+                    else if(userChoice == i && userChoice > pizzas[index].IngredientList.Count)
                     {
-                        pizzas[index].RemoveExtraIngredient(userChoice - ingredientArray.Length);
-                        totalPrice -= 5;
-                        DrawExtras();
+                        ConfirmRemoval(pizzas[index].ExtraIngredientList, index, (userChoice - pizzas[index].IngredientList.Count), "extra");
                     }
 
                     else if(userChoice == ingredientCounter + 1)
@@ -982,6 +983,40 @@ namespace BeställningsTerminal
 
             }
         } //end DrawRemovePieces();
+
+        public void ConfirmRemoval(List<string> IngredientList, int pizzaIndex, int ingredientIndex, string normalOrExtra)
+        {
+            bool correctKey = false;
+
+            while (correctKey == false)
+            {
+                Console.Clear();
+                Console.WriteLine($"Är du säker på att du vill ta bort {IngredientList[ingredientIndex - 1]}?");
+                Console.WriteLine("1. Ja");
+                Console.WriteLine("2. Nej");
+
+                int userChoice = Console.ReadKey(true).KeyChar - '0';
+
+                if (userChoice == 1 && normalOrExtra == "normal")
+                {
+                    pizzas[pizzaIndex].RemoveIngredient(ingredientIndex);
+                    DrawExtras();
+                }
+
+                else if (userChoice == 1 && normalOrExtra == "extra")
+                {
+                    pizzas[pizzaIndex].RemoveExtraIngredient(ingredientIndex);
+                    DrawExtras();
+                    totalPrice -= 5;
+                }
+
+                else if (userChoice == 2)
+                {
+                    DrawExtras();
+                }
+            }
+
+        }
 
         // Funktion som ritar ut att ett val har tagits bort
         public void DrawConfirmRemoval()
