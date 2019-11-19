@@ -79,17 +79,41 @@ namespace OrderTerminal_JC
                     Console.WriteLine("Ange numret på den order som gästen hämtat: ");
                     correctKey = int.TryParse(Console.ReadLine(), out int orderNumber);
 
+
+                    
                     // här kontrolleras sedan så att det nummer som skrivs in överensstämmer med det som angetts
-                    foreach (int order in ordersReadyToCollect)
+                    //foreach (int order in ordersReadyToCollect)
+                    //{
+
+                    //    if (order == orderNumber)
+                    //    {
+                    //        Console.Clear();
+                    //        Console.WriteLine("Ordern utlämnad");
+                    //        ordersReadyToCollect.Remove(order);
+                    //        System.Threading.Thread.Sleep(1500);
+                    //        OrdersReadyToServe(ordersReadyToCollect);
+                    //        chosenOrder = true;
+                    //    }
+                    //}
+
+                    for(int i = 0; i < ordersReadyToCollect.Count - 1; i++)
                     {
-                        if (order == orderNumber)
+                        if (ordersReadyToCollect[i] == orderNumber)
                         {
                             Console.Clear();
                             Console.WriteLine("Ordern utlämnad");
-                            ordersReadyToCollect.Remove(order);
+                            ordersReadyToCollect.Remove(ordersReadyToCollect[i]);
                             System.Threading.Thread.Sleep(1500);
                             OrdersReadyToServe(ordersReadyToCollect);
                             chosenOrder = true;
+                        }
+
+                        else if (i == ordersReadyToCollect.Count - 2 && ordersReadyToCollect[i] != orderNumber)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Ordern finns inte.");
+                            System.Threading.Thread.Sleep(1500);
+                            OrdersReadyToServe(ordersReadyToCollect);
                         }
                     }
 
