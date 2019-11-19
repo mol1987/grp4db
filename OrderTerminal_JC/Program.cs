@@ -82,19 +82,6 @@ namespace OrderTerminal_JC
 
                     
                     // här kontrolleras sedan så att det nummer som skrivs in överensstämmer med det som angetts
-                    //foreach (int order in ordersReadyToCollect)
-                    //{
-
-                    //    if (order == orderNumber)
-                    //    {
-                    //        Console.Clear();
-                    //        Console.WriteLine("Ordern utlämnad");
-                    //        ordersReadyToCollect.Remove(order);
-                    //        System.Threading.Thread.Sleep(1500);
-                    //        OrdersReadyToServe(ordersReadyToCollect);
-                    //        chosenOrder = true;
-                    //    }
-                    //}
 
                     for(int i = 0; i < ordersReadyToCollect.Count - 1; i++)
                     {
