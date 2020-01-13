@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BeställningsTerminal
 {
-    public static class Payment
+    public  class Payment
     {
         public static bool Pay()
         {
