@@ -6,8 +6,8 @@ namespace BeställningsTerminal
 {
     public class Pizza
     {
-        public List<string> IngredientList = new List<string>();
-        public List<string> ExtraIngredientList = new List<string>();
+        public List<string> IngredientList;
+        public List<string> ExtraIngredientList;
 
         public string name { get; set; }
 
@@ -18,6 +18,8 @@ namespace BeställningsTerminal
 
         public Pizza(string name)
         {
+            IngredientList = new List<string>();
+            ExtraIngredientList = new List<string>();
             this.name = name;
         }
 

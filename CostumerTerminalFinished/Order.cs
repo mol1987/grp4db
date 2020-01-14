@@ -11,8 +11,15 @@ namespace BeställningsTerminal
         char key;
         int index;
         double totalPrice;
-        string italiensk = "Italiensk botten";
-        string amerikansk = "Amerikansk botten";
+        string italiensk;
+        string amerikansk;
+
+        public Order()
+        {
+            italiensk = "Italiensk botten";
+            amerikansk = "Amerikansk botten";
+            StartOrder();
+        }
 
         // Ritar ut en välkomstskärm
         public void StartOrder()
@@ -414,7 +421,7 @@ namespace BeställningsTerminal
                 switch (key)
                 {
                     case '1':
-                        drinks.Add(new Drink("Läsk"));
+                        drinks.Add(new Drink(DrinksList.Läsk));
                         CurrentOrder.Add("Läsk");
                         totalPrice += 20;
                         DrawConfirmationScreen();
@@ -422,14 +429,14 @@ namespace BeställningsTerminal
                         break;
 
                     case '2':
-                        drinks.Add(new Drink("Öl"));
+                        drinks.Add(new Drink(DrinksList.Öl));
                         CurrentOrder.Add("Öl");
                         totalPrice += 50;
                         DrawConfirmationScreen();
                         correctKey = true;
                         break;
                     case '3':
-                        drinks.Add(new Drink("Vin"));
+                        drinks.Add(new Drink(DrinksList.Vin));
                         CurrentOrder.Add("Vin");
                         totalPrice += 50;
                         DrawConfirmationScreen();

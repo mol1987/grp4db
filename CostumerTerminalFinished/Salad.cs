@@ -12,7 +12,7 @@ namespace BeställningsTerminal
         public Salad(string name)
         {
             this.name = name;
-            price += 80;
+            price = 80;
         }
     }
 }
