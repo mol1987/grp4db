@@ -4,6 +4,7 @@ using System.Text;
 
 namespace BeställningsTerminal
 {
+    //hej
     public enum DrinksList
     {
         Läsk=0,
