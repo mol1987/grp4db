@@ -1,9 +1,9 @@
 ﻿using System;
 
 namespace ProjectDatabaseTrial
-{
+{ 
     class Program
-    {
+    { // SQLproject will be added to the projectDatabasseTrial
         static void Main(string[] args)
         {// brings List of Articles from database
             ArticklesRepository repo = new ArticklesRepository();
