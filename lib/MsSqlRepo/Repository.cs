@@ -15,7 +15,14 @@ namespace MsSqlRepo
         SqlConnection connection { get; }
         public Repository()
         {
-            ConnectionString = "Data Source=sql6009.site4now.net;Initial Catalog=DB_A53DDD_JAKOB;User Id=DB_A53DDD_JAKOB_admin;Password=hunter12;";
+            // Fetching from locally stored secrets
+            string host = Helper.Globals.Get("host");
+            string database = Helper.Globals.Get("db");
+            string username = Helper.Globals.Get("usr");
+            string password = Helper.Globals.Get("pwd");
+            string port = Helper.Globals.Get("port");
+
+            ConnectionString = $"Data Source={host};Initial Catalog={database};User Id={username};Password={password};";
             connection = new SqlConnection(ConnectionString);
             connection.Open();
         }
