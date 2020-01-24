@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Helper\Helper.csproj" />
     <ProjectReference Include="..\TypeLib\TypeLib.csproj" />
   </ItemGroup>
 
