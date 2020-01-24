@@ -6,8 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MsSqlRepo\MsSqlRepo.csproj" />
-    <ProjectReference Include="..\TypeLib\TypeLib.csproj" />
+    <ProjectReference Include="..\lib\Helper\Helper.csproj" />
+    <ProjectReference Include="..\lib\MsSqlRepo\MsSqlRepo.csproj" />
+    <ProjectReference Include="..\lib\TypeLib\TypeLib.csproj" />
   </ItemGroup>
 
 </Project>
