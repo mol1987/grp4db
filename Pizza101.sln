@@ -13,11 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderTerminal_JC", "OrderTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminTerminal", "AdminTerminal\AdminTerminal.csproj", "{1273B5DA-2976-4415-9C50-A5DB286005B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeLib", "TypeLib\TypeLib.csproj", "{11473188-65B2-4B55-A7E7-1E35F416B4EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypeLib", "TypeLib\TypeLib.csproj", "{11473188-65B2-4B55-A7E7-1E35F416B4EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsSqlRepo", "MsSqlRepo\MsSqlRepo.csproj", "{A6241B61-B214-4869-9454-400E38BFC1C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsSqlRepo", "MsSqlRepo\MsSqlRepo.csproj", "{A6241B61-B214-4869-9454-400E38BFC1C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testDB", "testDB\testDB.csproj", "{F1124123-D205-4CB9-B71B-06AF2F76723A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "testDB\Test.csproj", "{F1124123-D205-4CB9-B71B-06AF2F76723A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{B916096A-CFA2-436A-9A25-6CAB842D4223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helper", "Helper\Helper.csproj", "{C80ADF64-F7BC-4697-B205-CC80B2735E22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,9 +61,18 @@ Global
 		{F1124123-D205-4CB9-B71B-06AF2F76723A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1124123-D205-4CB9-B71B-06AF2F76723A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1124123-D205-4CB9-B71B-06AF2F76723A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C80ADF64-F7BC-4697-B205-CC80B2735E22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C80ADF64-F7BC-4697-B205-CC80B2735E22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C80ADF64-F7BC-4697-B205-CC80B2735E22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C80ADF64-F7BC-4697-B205-CC80B2735E22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A6241B61-B214-4869-9454-400E38BFC1C9} = {B916096A-CFA2-436A-9A25-6CAB842D4223}
+		{F1124123-D205-4CB9-B71B-06AF2F76723A} = {B916096A-CFA2-436A-9A25-6CAB842D4223}
+		{C80ADF64-F7BC-4697-B205-CC80B2735E22} = {B916096A-CFA2-436A-9A25-6CAB842D4223}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E288FF6E-ADAC-42D2-ABD8-AB33FEB69A60}

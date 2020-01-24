@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using TypeLib;
 
-namespace testDB
+namespace Test
 {
     class Program
     {
@@ -21,6 +21,7 @@ namespace testDB
                 Console.WriteLine();
             }
             Console.WriteLine("Hello World!");
+            Console.ReadKey();
         }
     }
 }
