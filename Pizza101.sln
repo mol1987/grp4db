@@ -11,7 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeställningsTerminal", "Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderTerminal_JC", "OrderTerminal_JC\OrderTerminal_JC.csproj", "{C20CE3AA-60DE-4A58-93A4-BAD31A403093}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminTerminal", "AdminTerminal\AdminTerminal.csproj", "{1273B5DA-2976-4415-9C50-A5DB286005B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminTerminal", "AdminTerminal\AdminTerminal.csproj", "{1273B5DA-2976-4415-9C50-A5DB286005B0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypeLib", "..\grp4db-master\TypeLib\TypeLib.csproj", "{A675FDB6-4261-4899-B2C2-86434781B88E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MsSqlRepo", "..\grp4db-master\MsSqlRepo\MsSqlRepo.csproj", "{7AFBC121-4E88-463C-A649-5DD2A6B98489}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testDB", "..\grp4db-master\testDB\testDB.csproj", "{384A9478-2BA2-49A4-B06C-0D10308373A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +45,18 @@ Global
 		{1273B5DA-2976-4415-9C50-A5DB286005B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1273B5DA-2976-4415-9C50-A5DB286005B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1273B5DA-2976-4415-9C50-A5DB286005B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A675FDB6-4261-4899-B2C2-86434781B88E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A675FDB6-4261-4899-B2C2-86434781B88E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A675FDB6-4261-4899-B2C2-86434781B88E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A675FDB6-4261-4899-B2C2-86434781B88E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AFBC121-4E88-463C-A649-5DD2A6B98489}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AFBC121-4E88-463C-A649-5DD2A6B98489}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AFBC121-4E88-463C-A649-5DD2A6B98489}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AFBC121-4E88-463C-A649-5DD2A6B98489}.Release|Any CPU.Build.0 = Release|Any CPU
+		{384A9478-2BA2-49A4-B06C-0D10308373A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{384A9478-2BA2-49A4-B06C-0D10308373A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{384A9478-2BA2-49A4-B06C-0D10308373A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{384A9478-2BA2-49A4-B06C-0D10308373A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
