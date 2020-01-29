@@ -26,10 +26,106 @@ namespace MsSqlRepo
             connection = new SqlConnection(ConnectionString);
             connection.Open();
         }
-
-
-
-        public async Task<IEnumerable<Articles>> GetAllArticlesWithIngredients()    
+        /* ADLU => (Add, Delete, List, Update) 
+         * 
+         * In alphabetical order
+         * ------
+         * Article
+         * Employee
+         * Ingredient
+         * Order
+         * -------
+         */
+        public async Task<int> AddArticle(Articles article)
+        {
+            string query = "INSERT INTO Articles(Name, BasePrice, Type) OUTPUT Inserted.Id VALUES(@Name, @BasePrice, @Type)";
+            var result = (await connection.QueryAsync<Articles>(query, article)).ToList();
+            return result.First().ID;
+        }
+        public async Task DeleteArticle(int id)
+        {
+            string query = "DELETE FROM Articles WHERE ID = @ID";
+            var result = connection.QueryAsync(query, new { ID = id });
+        }
+        public async Task<List<Articles>> ListArticles()
+        {
+            string query = "SELECT * FROM Articles";
+            var result = (await connection.QueryAsync<Articles>(query)).ToList();
+            return result;
+        }
+        public async Task UpdateArticle(Articles article)
+        {
+            string query = "UPDATE Articles SET(Name = @Name, BasePrice = @BasePrice, Type = @Type)";
+            var result = connection.QueryAsync<Articles>(query, article);
+        }
+        public async Task<Employees> AddEmployee(Employees employee)
+        {
+            string query = "INSERT INTO Employees(Name, LastName, Email, Password) VALUES(@Name, @LastName, @Email, @Password)";
+            var result = await connection.QueryAsync<Employees>(query);
+            return employee;
+        }
+        public async Task<bool> DeleteEmployee(int id)
+        {
+            string query = "DELETE FROM Employees WHERE ID = @ID";
+            var result = connection.Execute(query, new { ID = id });
+            return result > 0 ? true : false;
+        }
+        public async Task<List<Employees>> ListEmployees()
+        {
+            string query = "SELECT * FROM Employees";
+            var result = connection.Query<Employees>(query);
+            return result.ToList();
+        }
+        public async Task<bool> UpdateEmployee(Employees employee)
+        {
+            string query = "UPDATE Employees SET(Name = @Name, LastName = @LastName, Email = @Email, Password = @Password) WHERE ID = @ID";
+            var result = await connection.QueryAsync<Employees>(query, employee);
+            return result.GetType() == typeof(Employees) ? true : false;
+        }
+        public async Task<bool> AddIngredient(Ingredients ingredient)
+        {
+            string query = "INSERT INTO Ingredient(Name, Price) VALUES (@Name, @Price)";
+            var result = await connection.QueryAsync<Ingredients>(query, ingredient);
+            return result.GetType() == typeof(Ingredients) ? true : false;
+        }
+        public async Task DeleteIngredient(int id)
+        {
+            string query = "DELETE FROM Ingredients WHERE ID = @ID";
+            var result = await connection.QueryAsync<Ingredients>(query, new { ID = id });
+        }
+        public async Task<List<Ingredients>> ListIngredients()
+        {
+            string query = "SELECT * FROM Ingredients";
+            var result = await connection.QueryAsync<Ingredients>(query);
+            return result.ToList();
+        }
+        public async Task UpdateIngredient(Ingredients ingredient)
+        {
+            string query = "UPDATE Ingredients SET(Name = @Name, Price = @Price)";
+            var result = await connection.QueryAsync<Ingredients>(query, ingredient);
+        }
+        public async Task AddOrder(Orders order)
+        {
+            string query = "INSERT INTO Orders(Orderstatus, Price) VALUES (Orderstatus, Price)";
+            var result = await connection.QueryAsync<Orders>(query, order);
+        }
+        public async Task DeleteOrder(int id)
+        {
+            string query = "DELETE FROM Orders WHERE ID = @ID";
+            var result = await connection.QueryAsync<Orders>(query, new { ID = id });
+        }
+        public async Task<List<Orders>> ListOrders()
+        {
+            string query = "SELECT * FROM Orders";
+            var result = await connection.QueryAsync<Orders>(query);
+            return result.ToList();
+        }
+        public async Task UpdateOrder(Orders order)
+        {
+            string query = "UPDATE Orders SET(Orderstatus = @Orderstatus, Price = @price)";
+            var result = await connection.QueryAsync<Orders>(query, order);
+        }
+        public async Task<IEnumerable<Articles>> GetAllArticlesWithIngredients()
         {
             IEnumerable<Articles> articles = await connection.QueryAsync<Articles>("getArticles", commandType: CommandType.StoredProcedure);
             foreach (Articles article in articles)
@@ -38,7 +134,5 @@ namespace MsSqlRepo
             }
             return articles;
         }
-
-
     }
 }
