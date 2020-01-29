@@ -13,5 +13,16 @@ namespace TypeLib
         public string Type { get; set; }
 
         public List<Ingredients> Ingredients { get; set; }
+        /// <summary>
+        /// Prints out neatly for list
+        /// </summary>
+        public void PrintRow()
+        {
+            Console.Write("{0}{1}{2}{3}\n", ID, Name.PadLeft(4), BasePrice.ToString().PadLeft(4), Type.PadLeft(4));
+        }
+        public void PrintKeys()
+        {
+            Console.Write("{0}{1}{2}{3}\n", "ID", "Name", "BasePrice", "Type");
+        }
     }
 }
