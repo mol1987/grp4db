@@ -87,7 +87,7 @@ namespace Test
             return res;
         }
         static async Task Test2()
-        {
+        { // Added by meles
             var repo = new Repository();
             foreach (Orders order in (await repo.GetAllOrdersWithArticles()))
             {
