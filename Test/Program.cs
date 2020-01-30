@@ -89,6 +89,16 @@ namespace Test
         static async Task Test2()
         {
             var repo = new Repository();
+            foreach (Orders order in (await repo.GetAllOrdersWithArticles()))
+            {
+                Console.WriteLine(order.ID);
+                Console.WriteLine(order.Orderstatus);
+                Console.WriteLine(order.TimeCreated);
+                foreach (Articles articleOrderItem in order.Articles)
+                {
+                    Console.Write(" " + articleOrderItem.Name.Trim(' ') + ",");
+                }
+            }
 
             foreach (Articles article in (await repo.GetAllArticlesWithIngredients()))
             {

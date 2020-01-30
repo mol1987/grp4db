@@ -36,6 +36,17 @@ namespace MsSqlRepo
          * Order
          * -------
          */
+        public async Task<IEnumerable<Orders>> GetAllOrdersWithArticles()
+        {
+            IEnumerable<Orders> orders = await connection.QueryAsync<Orders>("GetAllOrders", commandType: CommandType.StoredProcedure);
+            foreach (Orders order in orders)
+            {
+                order.Articles = (await connection.QueryAsync<Articles>("GetArticleOrders", new { OrderID = order.ID }, commandType: CommandType.StoredProcedure)).ToList();
+
+            }
+            return orders;
+
+        }
         public async Task<int> AddArticle(Articles article)
         {
             string query = "INSERT INTO Articles(Name, BasePrice, Type) OUTPUT Inserted.Id VALUES(@Name, @BasePrice, @Type)";
