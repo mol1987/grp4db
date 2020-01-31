@@ -86,30 +86,7 @@ namespace Test
             }
             return res;
         }
-        static async Task Test2()
-        { // Added by meles
-            var repo = new Repository();
-            foreach (Orders order in (await repo.GetAllOrdersWithArticles()))
-            {
-                Console.WriteLine(order.ID);
-                Console.WriteLine(order.Orderstatus);
-                Console.WriteLine(order.TimeCreated);
-                foreach (Articles articleOrderItem in order.Articles)
-                {
-                    Console.Write(" " + articleOrderItem.Name.Trim(' ') + ",");
-                }
-            }
-
-            foreach (Articles article in (await repo.GetAllArticlesWithIngredients()))
-            {
-                Console.Write($"{article.Name}");
-                foreach (Ingredients ingredientItem in article.Ingredients)
-                {
-                    Console.Write(" " + ingredientItem.Name.Trim(' ') + ",");
-                }
-                Console.WriteLine();
-            }
-        }
+  
 
         static async Task TestRepo()
         {
@@ -142,6 +119,9 @@ namespace Test
             TestTool.PrintSuccess("Got {0} row from Orders\n", orders.Count());
             Console.Write("{0}\t{1}\t{2}\t{3}\t{4}\n", "ID", "TimeCreated", "Orderstatus", "Price", "CustomerID");
             orders.ForEach(order => Console.Write("{0}\t{1}\t{2}\t{3}\t{4}\n", order.ID, order.TimeCreated, order.Orderstatus, order.Price, order.CustomerID));
+
+            await repoOrders.UpdateAsync(new Orders() {ID = 12, Orderstatus = 0, Price = 124, CustomerID = 1 });
+
         }
     }
 

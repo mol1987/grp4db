@@ -36,9 +36,11 @@ namespace MsSqlRepo
                 var result = await connection.QuerySingleOrDefaultAsync<Articles>($"SELECT * FROM {_tableName} WHERE Id=@Id", new { Id = id });
                 if (result == null)
                     throw new KeyNotFoundException($"{_tableName} with id [{id}] could not be found.");
-
+                result.Ingredients = (await connection.QueryAsync<Ingredients>("getArticleIngredients", new { articleID = result.ID }, commandType: CommandType.StoredProcedure)).ToList();
                 return result;
             }
         }
+
+
     }
 }

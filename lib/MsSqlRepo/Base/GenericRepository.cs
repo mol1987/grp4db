@@ -102,7 +102,7 @@ namespace MsSqlRepo
 
         public async Task InsertAsync(T t)
         {
-            var insertQuery = GenerateInsertQuery();
+            var insertQuery = GenerateInsertQuery(t);
 
             using (var connection = CreateConnection())
             {
@@ -110,14 +110,23 @@ namespace MsSqlRepo
             }
         }
 
-        private string GenerateInsertQuery()
+        private string GenerateInsertQuery(T t)
         {
             var insertQuery = new StringBuilder($"INSERT INTO {_tableName} ");
 
             insertQuery.Append("(");
 
-            var properties = GenerateListOfProperties(GetProperties);
-            properties.ForEach(prop => { insertQuery.Append($"[{prop}],"); });
+            //var properties = GenerateListOfProperties(GetProperties)
+            List<string> properties = new List<string>();
+            foreach (var prop in t.GetType().GetProperties())
+            {
+                if (prop.GetValue(t, null) != null)
+                    properties.Add(prop.Name);
+
+            }
+            properties.ForEach(prop => {
+                insertQuery.Append($"[{prop}],");
+            });
 
             insertQuery
                 .Remove(insertQuery.Length - 1, 1)
@@ -128,13 +137,35 @@ namespace MsSqlRepo
             insertQuery
                 .Remove(insertQuery.Length - 1, 1)
                 .Append(")");
+            Console.WriteLine("insertQuery: " + insertQuery.ToString());
+            return insertQuery.ToString();
+        }
+        private string GenerateInsertQuery()
+        {
+            var insertQuery = new StringBuilder($"INSERT INTO {_tableName} ");
 
+            insertQuery.Append("(");
+
+            var properties = GenerateListOfProperties(GetProperties);
+            properties.ForEach(prop => {
+                insertQuery.Append($"[{prop}],"); });
+
+            insertQuery
+                .Remove(insertQuery.Length - 1, 1)
+                .Append(") VALUES (");
+
+            properties.ForEach(prop => { insertQuery.Append($"@{prop},"); });
+
+            insertQuery
+                .Remove(insertQuery.Length - 1, 1)
+                .Append(")");
+            
             return insertQuery.ToString();
         }
 
         public async Task UpdateAsync(T t)
         {
-            var updateQuery = GenerateUpdateQuery();
+            var updateQuery = GenerateUpdateQuery(t);
 
             using (var connection = CreateConnection())
             {
@@ -142,6 +173,32 @@ namespace MsSqlRepo
             }
         }
 
+        private string GenerateUpdateQuery(T t)
+        {
+            var updateQuery = new StringBuilder($"UPDATE {_tableName} SET ");
+            List<string> properties = new List<string>();
+            foreach (var prop in t.GetType().GetProperties())
+            {
+                if (prop.GetValue(t, null) != null)
+                    properties.Add(prop.Name);
+
+            }
+
+            properties.ForEach(property =>
+            {
+                if (!property.Equals("ID"))
+                {
+                    updateQuery.Append($"{property}=@{property},");
+                }
+            });
+
+            Console.WriteLine("updateQuery: " + updateQuery.ToString());
+
+            updateQuery.Remove(updateQuery.Length - 1, 1); //remove last comma
+            updateQuery.Append(" WHERE Id=@Id");
+
+            return updateQuery.ToString();
+        }
         private string GenerateUpdateQuery()
         {
             var updateQuery = new StringBuilder($"UPDATE {_tableName} SET ");
