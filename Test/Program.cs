@@ -110,54 +110,42 @@ namespace Test
                 Console.WriteLine();
             }
         }
+
         static async Task TestRepo()
         {
-            var repo = new Repository();
+            var repo = new ArticlesRepository("Articles");
 
             // Example with Print Baked into the Object itself
             List<Articles> articles = new List<Articles>();
-            articles = await repo.ListArticles();
+            articles = (await repo.GetAllAsync()).ToList();
             TestTool.PrintSuccess("Got {0} row from Articles\n", articles.Count());
             articles.First().PrintKeys();
             articles.ForEach(article => article.PrintRow());
 
             //
-            List<Employees> employees = await repo.ListEmployees();
+            var repoEmployees = new EmployeesRepository("Employees");
+            List<Employees> employees = (await repoEmployees.GetAllAsync()).ToList();
             TestTool.PrintSuccess("Got {0} row from Employees\n", employees.Count());
             Console.Write("{0}\t{1}\t{2}\t{3}\t{4}\n", "ID", "Name", "LastName", "Email", "Password");
             employees.ForEach(employee => Console.Write("{0}\t{1}\t{2}\t{3}\t{4}\n", employee.ID, employee.Name, employee.LastName, employee.Email, new string('*', employee.Password.Length)));
 
             //
-            var ingredients = await repo.ListIngredients();
+            var repoIngredients = new IngredientsRepository("Ingredients");
+            var ingredients = (await repoIngredients.GetAllAsync()).ToList();
             TestTool.PrintSuccess("Got {0} row from Ingredients\n", employees.Count());
             Console.Write("{0}\t{1}\t{2}\n", "ID", "Name", "Price");
             ingredients.ForEach(ingredient => Console.Write("{0}\t{1}\t{2}\n", ingredient.ID, ingredient.Name, ingredient.Price));
 
             //
-            List<Orders> orders = await repo.ListOrders();
+            var repoOrders = new OrdersRepository("Orders");
+            List<Orders> orders = (await repoOrders.GetAllAsync()).ToList();
             TestTool.PrintSuccess("Got {0} row from Orders\n", orders.Count());
             Console.Write("{0}\t{1}\t{2}\t{3}\t{4}\n", "ID", "TimeCreated", "Orderstatus", "Price", "CustomerID");
             orders.ForEach(order => Console.Write("{0}\t{1}\t{2}\t{3}\t{4}\n", order.ID, order.TimeCreated, order.Orderstatus, order.Price, order.CustomerID));
-
-            // Add 1 article
-            Articles newArticle = new Articles();
-            newArticle.Name = "Potatissallad";
-            //newArticle.Ingredients.Add(new Ingredients() { Name = "Potatis", Price = 0.0f });
-            newArticle.Type = "Sallad";
-            newArticle.BasePrice = 79.9f;
-            var articleid = await repo.AddArticle(newArticle);
-            TestTool.PrintSuccess("Added new article id = {0}", articleid);
-            await repo.DeleteArticle(articleid);
-            TestTool.PrintSuccess("DELETED article with id = {0}", articleid);
-            // Update 1 Article
-
-            //repo.UpdateArticle()
-
-
-            // Delete 1 Article
-
         }
     }
+
+  
     public static class TestTool
     {
 
