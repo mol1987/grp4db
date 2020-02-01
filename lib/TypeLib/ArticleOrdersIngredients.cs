@@ -8,7 +8,7 @@ namespace TypeLib
     {
         public int ID { get; set; }
         public int IngredientsID { get; set; }
-        public int ArticlesID { get; set; }
-        public int OrdersID { get; set; }
+        public int ArticleOrdersID { get; set; }
+
     }
 }

@@ -17,7 +17,7 @@ namespace MsSqlRepo
             _tableName = tableName;
         }
 
-        new public async Task<IEnumerable<Articles>> GetAllAsync(int id)
+        new public async Task<IEnumerable<Articles>> GetAllAsync()
         {
             using (var connection = base.CreateConnection())
             {

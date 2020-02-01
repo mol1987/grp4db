@@ -11,6 +11,7 @@ namespace TypeLib
         public string? Name { get; set; }
         public float? BasePrice { get; set; }
         public string? Type { get; set; }
+        public ArticleOrders? ArticleOrder { get; set; }
 
         public List<Ingredients> Ingredients { get; set; }
         /// <summary>

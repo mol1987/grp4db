@@ -12,6 +12,6 @@ namespace TypeLib
         public float? Price { get; set; }
         public int? CustomerID { get; set; }
         public List<Articles>? Articles { get; set; }
-
+        
     }
 }

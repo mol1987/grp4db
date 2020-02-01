@@ -9,19 +9,19 @@ namespace MsSqlRepo
 {
     public class IngredientsRepository : GenericRepository<Ingredients>
     {
+        string tableName;
         public IngredientsRepository(string tableName) : base(tableName)
         {
-           
+            this.tableName = tableName;
         }
-        public async Task InsertCustomIngredientsAsync(Orders order, Articles article, List<Ingredients> ingredients)
+        public async Task InsertCustomIngredientsAsync(ArticleOrders articleOrder, List<Ingredients> ingredients)
         {
             using (var connection = CreateConnection())
             {
                 foreach (var ingredient in ingredients)
                 {
-                    var insertQuery = $"INSERT INTO ArticleOrdersIngredients (IngredientsID, ArticlesID, OrdersID) VALUES (@OrdersID, @ArticlesID, @IngredientsID)";
-                    await connection.ExecuteAsync(insertQuery, new ArticleOrdersIngredients {IngredientsID = (int)ingredient.ID, ArticlesID = (int)article.ID, OrdersID = (int) order.ID});
-                
+                    var insertQuery = $"INSERT INTO ArticleOrdersIngredients (IngredientsID, ArticleOrdersID) VALUES (@IngredientsID, @ArticleOrdersID)";
+                    await connection.ExecuteAsync(insertQuery, new ArticleOrdersIngredients { IngredientsID = (int)ingredient.ID, ArticleOrdersID = articleOrder.ID });
                 }
             }
 
