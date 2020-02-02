@@ -14,6 +14,8 @@ namespace TypeLib
         public ArticleOrders? ArticleOrder { get; set; }
 
         public List<Ingredients> Ingredients { get; set; }
+
+      
         /// <summary>
         /// Prints out neatly for list
         /// </summary>

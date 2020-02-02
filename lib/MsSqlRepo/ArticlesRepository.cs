@@ -29,6 +29,32 @@ namespace MsSqlRepo
                 return articles;
             }
         }
+        new public async Task<IEnumerable<Articles>> GetAllAsync(Orders order)
+        {
+            using (var connection = base.CreateConnection())
+            {
+
+                IEnumerable<ArticleOrders> articleOrders = await connection.QueryAsync<ArticleOrders>($"SELECT * FROM ArticleOrders WHERE OrdersID=@Id", new { Id = order.ID });
+                List<Articles> articles = new List<Articles>();
+
+                string sql = $"select Ingredients.* FROM ARTICLES INNER JOIN ArticleOrders ON Articles.ID = ArticleOrders.ArticlesID inner join ArticleOrdersIngredients on ArticleOrdersIngredients.ArticleOrdersID = ArticleOrders.ID inner join Ingredients on Ingredients.ID = ArticleOrdersIngredients.IngredientsID WHERE ArticleOrders.OrdersID = @OrdersID and ArticleOrders.ID = @ArticleOrdersID";
+
+                foreach (ArticleOrders articleOrdersItem in articleOrders)
+                {
+                    Articles article = await connection.QuerySingleOrDefaultAsync<Articles>($"SELECT * FROM {_tableName} WHERE Id=@Id", new { Id = articleOrdersItem.ArticlesID });
+                    article.Ingredients = new List<Ingredients>();
+                    article.Ingredients = (await connection.QueryAsync<Ingredients>(sql, new { OrdersID = order.ID, ArticleOrdersID = articleOrdersItem.ID })).ToList();
+                    articles.Add(article);
+                }
+
+                //string sql = $"select ArticleOrdersIngredients.* FROM ARTICLES INNER JOIN ArticleOrders ON Articles.ID = ArticleOrders.ArticlesID inner join ArticleOrdersIngredients on ArticleOrdersIngredients.ArticleOrdersID = ArticleOrders.ID WHERE ArticleOrders.OrdersID = @OrdersID and ArticleOrders.ID = @ArticleOrdersID";
+
+
+                return (IEnumerable<Articles>)articles;
+            }
+            
+        }
+
         new public async Task<Articles> GetAsync(int id)
         {
             using (var connection = CreateConnection())
