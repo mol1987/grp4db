@@ -18,22 +18,27 @@ namespace MsSqlRepo
         }
         public async Task MakeOrderAsync(Orders order, List<Articles> articles)
         {
-            
             using (var connection = CreateConnection())
             {
                 foreach (var article in articles)
                 {
-                    //var insertQuery = $"INSERT INTO {tableName} (ArticlesID, OrdersID) VALUES (@ArticlesID, @AOrderssID)";
-                    //await connection.ExecuteAsync(insertQuery, new ArticleOrders { OrdersID = (int)order.ID, ArticlesID = (int)article.ID});
-                    string sql = @"INSERT INTO  ArticleOrders (ArticlesID, OrdersID) VALUES (@ArticlesID, @OrdersID) SELECT CAST(SCOPE_IDENTITY() as int)";
+                    using (var transaction = connection.BeginTransaction())
+                    {
+                        string sql = @"INSERT INTO  ArticleOrders (ArticlesID, OrdersID) VALUES (@ArticlesID, @OrdersID) SELECT CAST(SCOPE_IDENTITY() as int)";
 
-                    var id = (await connection.QueryAsync<int>(sql, new { OrdersID = (int)order.ID, ArticlesID = (int)article.ID } )).Single();
+                        var id = (await connection.QueryAsync<int>(sql, new { OrdersID = (int)order.ID, ArticlesID = (int)article.ID }, transaction: transaction)).Single();
 
-                    article.ArticleOrder = (await connection.QuerySingleOrDefaultAsync<ArticleOrders>("Select * from ArticleOrders where ID = @ArticleOrdersID", new { ArticleOrdersID = id }));
+                        article.ArticleOrder = (await connection.QuerySingleOrDefaultAsync<ArticleOrders>("Select * from ArticleOrders where ID = @ArticleOrdersID", new { ArticleOrdersID = id }, transaction: transaction));
 
-                    var ingredientsRepo = new IngredientsRepository("Ingredients");
-                    await ingredientsRepo.InsertCustomIngredientsAsync(article.ArticleOrder, article.Ingredients);
+                        foreach (var ingredient in article.Ingredients)
+                        {
+                            var insertQuery = $"INSERT INTO ArticleOrdersIngredients (IngredientsID, ArticleOrdersID) VALUES (@IngredientsID, @ArticleOrdersID)";
+                            await connection.ExecuteAsync(insertQuery, new ArticleOrdersIngredients { IngredientsID = (int)ingredient.ID, ArticleOrdersID = article.ArticleOrder.ID }, transaction: transaction);
+                        }
 
+                        transaction.Commit();
+                    }
+        
                 }
             }
 

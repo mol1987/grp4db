@@ -86,7 +86,6 @@ namespace Test
             }
             return res;
         }
-  
 
         static async Task TestRepo()
         {
@@ -125,7 +124,7 @@ namespace Test
             //await repoIngredients.InsertCustomIngredientsAsync(orders.First(), articles.First(), articles.First().Ingredients);
             Orders order = orders.First() ;
             List<Articles> tempArticles = articles.GetRange(0, 2);
-            //await repoOrders.MakeOrderAsync(order, tempArticles);
+            await repoOrders.MakeOrderAsync(order, tempArticles);
             
             List<Articles> orderListArticles = (await repo.GetAllAsync(order)).ToList();
             foreach (var item in orderListArticles)
