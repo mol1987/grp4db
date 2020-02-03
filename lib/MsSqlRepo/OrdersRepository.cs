@@ -16,6 +16,20 @@ namespace MsSqlRepo
         {
             this.tableName = tableName;
         }
+
+        public async Task InsertAsync(Orders order)
+        {
+            string insertQuery = base.GenerateInsertQuery(order);
+
+            insertQuery += " SELECT CAST(SCOPE_IDENTITY() as int)";
+            using (var connection = CreateConnection())
+            {
+                var id = (await connection.QueryAsync<int>(insertQuery, order)).Single();
+                order.ID = id;
+            }
+            
+        }
+
         public async Task MakeOrderAsync(Orders order, List<Articles> articles)
         {
             using (var connection = CreateConnection())

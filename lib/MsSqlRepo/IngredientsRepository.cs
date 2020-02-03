@@ -26,6 +26,7 @@ namespace MsSqlRepo
             }
 
         }
+        /*
         public async Task GetCustomIngredientsAsync(ArticleOrders articleOrder, List<Ingredients> ingredients)
         {
             using (var connection = CreateConnection())
@@ -38,5 +39,6 @@ namespace MsSqlRepo
             }
 
         }
+        */
     }
 }

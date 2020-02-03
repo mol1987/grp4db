@@ -110,7 +110,7 @@ namespace MsSqlRepo
             }
         }
 
-        private string GenerateInsertQuery(T t)
+        public string GenerateInsertQuery(T t)
         {
             var insertQuery = new StringBuilder($"INSERT INTO {_tableName} ");
 

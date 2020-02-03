@@ -16,7 +16,8 @@ namespace Test
 
             var a = await TestEnvironment();
             var b = await TestEnvVariables();
-            await TestRepo();
+            //await TestRepo();
+            await TestRepo2();
             Console.WriteLine("press any key to quit");
             Console.ReadKey();
             
@@ -87,6 +88,42 @@ namespace Test
             return res;
         }
 
+        static async Task TestRepo2()
+        {
+
+            var repo = new ArticlesRepository("Articles");
+            List<Articles> articles = new List<Articles>();
+            articles = (await repo.GetAllAsync()).ToList();
+            TestTool.PrintSuccess("Got {0} row from Articles\n", articles.Count());
+
+            List<Articles> tempArticles = articles.GetRange(0, 2);
+
+            var repoOrders = new OrdersRepository("Orders");
+
+
+            Orders order = new Orders { CustomerID = 10};
+
+            await repoOrders.InsertAsync(order);
+
+
+
+            await repoOrders.MakeOrderAsync(order, tempArticles);
+
+            List<Articles> orderListArticles = (await repo.GetAllAsync(order)).ToList();
+
+
+            foreach (var item in orderListArticles)
+            {
+                Console.WriteLine(item.Name + " " + item.Type);
+                foreach (var item2 in item.Ingredients)
+                {
+                    Console.Write(item2.Name.Trim() + ", ");
+                }
+            }
+
+
+        }
+
         static async Task TestRepo()
         {
             var repo = new ArticlesRepository("Articles");
@@ -124,7 +161,7 @@ namespace Test
             //await repoIngredients.InsertCustomIngredientsAsync(orders.First(), articles.First(), articles.First().Ingredients);
             Orders order = orders.First() ;
             List<Articles> tempArticles = articles.GetRange(0, 2);
-            await repoOrders.MakeOrderAsync(order, tempArticles);
+            //await repoOrders.MakeOrderAsync(order, tempArticles);
             
             List<Articles> orderListArticles = (await repo.GetAllAsync(order)).ToList();
             foreach (var item in orderListArticles)
