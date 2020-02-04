@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using TypeLib;
 
 namespace AdminTerminal
 {
@@ -45,8 +46,8 @@ namespace AdminTerminal
             }
 
             // Clean out the input for remaining parameters
-            int n = (command.Value.Length + resource.Value.Length) + 1;
-            Input = Input.Remove(command.Match.Index, command.Value.Length).Remove(resource.Match.Index - (command.Value.Length + 1), resource.Value.Length);
+            int n = (command.Match.Value.Length + resource.Match.Value.Length) + 1;
+            Input = Input.Remove(command.Match.Index, command.Match.Value.Length).Remove(resource.Match.Index - (command.Match.Value.Length + 1), resource.Match.Value.Length);
             flags.ForEach(flag => Input = Input.Remove(flag.Index - n, flag.Length));
 
             // Values inside ""-quotes are to be kept together
@@ -57,7 +58,7 @@ namespace AdminTerminal
 
             // Parse the rest into parameters
             Input.Split(' ').ToList().ForEach(a => parameters.Add(a));
-
+            
             // If all is well, execute dynamically
             Action action = new Action();
             action.Parameters = parameters;
@@ -113,8 +114,18 @@ namespace AdminTerminal
         public List<string> Parameters { get; set; }
         public void AddArticle(string s)
         {
-            var missing = Parameters.Missing(new List<string>() { "Name", "Desc", "Type", "Price" });
-            View.WriteLine("quit");
+            //var missing = Parameters.Missing(new List<string>() { "Name", "BasePrice", "Type" });
+            // Desc is frivillig
+            if(new List<string>() { "Name", "BasePrice", "Type" }.Count - Parameters.Count !> 0)
+            {
+                throw new Exception($"Missing {Parameters.Count} arguments for 'Add Article'");
+            }
+            Articles newArticle = new Articles();
+            newArticle.Name = this.Parameters[0];
+            newArticle.BasePrice = (float)Convert.ToDouble(this.Parameters[1]);
+            newArticle.Type = this.Parameters[2];
+            newArticle.PrintKeys();
+            newArticle.PrintRow();
         }
         public void DeleteArticle(string s) => View.WriteLine("2");
         public void ListArticle(string s) => View.WriteLine("3");

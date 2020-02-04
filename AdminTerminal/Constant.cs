@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace AdminTerminal
@@ -20,9 +21,51 @@ namespace AdminTerminal
             //new Flag{Key="help", Varations = new List<string>(){"-help","--help","-h"}, Callback = new Action().HelpFlag }
             // -p ?
         };
-        public class Command { }
-        public class Resource { }
-        public class Parameter { }
+        //public static List<Parameters> ParameterList = new List<Parameters>()
+        //{
+        //    new Parameters("AddArticle", new[]{ "Name","Desc","Type","Price"}, new dynamic[]{"string","string","string",0.1f}, new bool[]{true,false,true,true}),
+        //    new Parameters("DeleteArticle", new[]{ "ID"}, new dynamic[]{1}, new bool[]{true}),
+        //    new Parameters("UpdateArticle", new[]{ "ID","Name","Desc","Type","Price"}, new dynamic[]{1,"string","string","string",0.1f}, new bool[]{true,true,false,true,true}),
+        //    new Parameters("ListArticle", new[]{ "ID", "Name"}, new dynamic[]{true,true}, new bool[]{false,false}),
+
+        //    new Parameters("AddEmployee", new[]{ "Name","LastName","Email","Password"}, new dynamic[]{"string","string","string","string"}, new bool[]{true,true,false,false}),
+        //    new Parameters("DeleteEmployee", new[]{"ID"}, new dynamic[]{1}, new bool[]{true}),
+        //    new Parameters("UpdateEmployee", new[]{ "ID","Name","LastName","Email","Password"}, new dynamic[]{"string","string","string",0.1f}, new bool[]{true,true,true, false, false}),
+        //    new Parameters("ListEmployee", new[]{ "ID", "Name"}, new dynamic[]{true,true}, new bool[]{false,false}),
+        //};
+
+        public class Parameters
+        {
+            public string Key { get; set; }
+            public List<string> Values
+            {
+                get; set;
+                //get
+                //{
+                //    return Values;
+                //}
+                //set
+                //{
+                //    value.ForEach(val => Values.Add(val));
+                //}
+            }
+            public List<Type> Types { get; set; }
+            public List<bool> Required { get; set; }
+            public Parameters(string key, string[] values, dynamic[] types, bool[] required)
+            {
+                Key = key;
+                Values = values.ToList();
+                types.ToList().ForEach(_ => Types.Add(_.GetType()));
+                Required = required.ToList();
+            }
+            //public List<Parameter> Parameter { get; set; }
+        }
+        public class Parameter
+        {
+            public string Value { get; set; }
+            public dynamic Type { get; set; }
+            public bool Required { get; set; }
+        }
         public class Flag
         {
             public string Key { get; set; }
@@ -56,7 +99,8 @@ namespace AdminTerminal
         public static bool HasHelpFlag(List<Match> flags)
         {
             bool hasFlag = false;
-            flags.ForEach(flag => {
+            flags.ForEach(flag =>
+            {
                 if (Constant.Flags["help"].Varations.Contains(flag.Value))
                 {
                     hasFlag = true;
