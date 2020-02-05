@@ -14,6 +14,7 @@ namespace AdminTerminal
             new RegexCommand("resource", @"(?<resource>)[Aa]rticle|[Ee]mployee|[Ii]ngredients?"),
             new RegexCommand("flags", @"(?<flag>-?-\w+)"),
             new RegexCommand("quotationParam", new Regex(@"(['""`][a-zA-Z0-9]+['""`])")),
+            //new RegexCommand("AddArticle", @"(?<name>)")
         };
         public static Dictionary<string, Flag> Flags = new Dictionary<string, Flag>()
         {
@@ -34,38 +35,38 @@ namespace AdminTerminal
         //    new Parameters("ListEmployee", new[]{ "ID", "Name"}, new dynamic[]{true,true}, new bool[]{false,false}),
         //};
 
-        public class Parameters
-        {
-            public string Key { get; set; }
-            public List<string> Values
-            {
-                get; set;
-                //get
-                //{
-                //    return Values;
-                //}
-                //set
-                //{
-                //    value.ForEach(val => Values.Add(val));
-                //}
-            }
-            public List<Type> Types { get; set; }
-            public List<bool> Required { get; set; }
-            public Parameters(string key, string[] values, dynamic[] types, bool[] required)
-            {
-                Key = key;
-                Values = values.ToList();
-                types.ToList().ForEach(_ => Types.Add(_.GetType()));
-                Required = required.ToList();
-            }
-            //public List<Parameter> Parameter { get; set; }
-        }
-        public class Parameter
-        {
-            public string Value { get; set; }
-            public dynamic Type { get; set; }
-            public bool Required { get; set; }
-        }
+        //public class Parameters
+        //{
+        //    public string Key { get; set; }
+        //    public List<string> Values
+        //    {
+        //        get; set;
+        //        //get
+        //        //{
+        //        //    return Values;
+        //        //}
+        //        //set
+        //        //{
+        //        //    value.ForEach(val => Values.Add(val));
+        //        //}
+        //    }
+        //    public List<Type> Types { get; set; }
+        //    public List<bool> Required { get; set; }
+        //    public Parameters(string key, string[] values, dynamic[] types, bool[] required)
+        //    {
+        //        Key = key;
+        //        Values = values.ToList();
+        //        types.ToList().ForEach(_ => Types.Add(_.GetType()));
+        //        Required = required.ToList();
+        //    }
+        //    //public List<Parameter> Parameter { get; set; }
+        //}
+        //public class Parameter
+        //{
+        //    public string Value { get; set; }
+        //    public dynamic Type { get; set; }
+        //    public bool Required { get; set; }
+        //}
         public class Flag
         {
             public string Key { get; set; }

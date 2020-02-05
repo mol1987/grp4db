@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using TypeLib;
@@ -17,18 +18,24 @@ namespace AdminTerminal
         /// Copy of original Readline()
         /// </summary>
         private string OriginalInput;
+        private string Command;
+        private string Resource;
 
         public Operation(string input)
         {
             Input = input;
             OriginalInput = input; // Kept for future comparisons/checks
+            //if (!res)
+            //{
+            //    throw new Exception("Server connection error, try again later or contact system adminstrator");
+            //}
 
             Input = Input.TrimStart();
-            List<string> parameters = new List<string>();
+            List<Match> parameters = new List<Match>();
             List<Match> quotatedParameters = new List<Match>();
-            List<Match> flags = Constant.GetRegexByKey("flags").Matches(Input).ToList();
-            Command command = new Command(Constant.GetRegexByKey("command").Match(Input));
-            Resource resource = new Resource(Constant.GetRegexByKey("resource").Match(Input));
+            List<Match> flags = new List<Match>();
+            Match command = Constant.GetRegexByKey("command").Match(Input);
+            Match resource = Constant.GetRegexByKey("resource").Match(Input);
 
             // If -help flag is found
             if (Constant.HasHelpFlag(flags))
@@ -46,58 +53,54 @@ namespace AdminTerminal
             }
 
             // Clean out the input for remaining parameters
-            int n = (command.Match.Value.Length + resource.Match.Value.Length) + 1;
-            Input = Input.Remove(command.Match.Index, command.Match.Value.Length).Remove(resource.Match.Index - (command.Match.Value.Length + 1), resource.Match.Value.Length);
-            flags.ForEach(flag => Input = Input.Remove(flag.Index - n, flag.Length));
+            Input = Input.Remove(command.Index, command.Length);
+            Input = Input.Remove((resource.Index - command.Length), resource.Length);
+            Input = Input.TrimStart();
+
+            // Uniform casing
+            this.Command = command.Value.FirstCharToUpper();
+            this.Resource = resource.Value.FirstCharToUpper();
 
             // Values inside ""-quotes are to be kept together
             if (Input.Contains('"') || Input.Contains('\'') || Input.Contains('`'))
             {
-
+                //todo; match inside
             }
 
-            // Parse the rest into parameters
-            Input.Split(' ').ToList().ForEach(a => parameters.Add(a));
-            
+            // Clear out flags from string
+            flags = Constant.GetRegexByKey("flags").Matches(Input).ToList();
+            int n = 0;
+            for (int i = 0; i < flags.Count; i++)
+            {
+                var flag = flags[i];
+                Input = Input.Remove(flag.Index - n, flag.Length);
+
+                n += flag.Length;
+            }
+            Input = Input.Trim();
+
+            // Parse the rest into parameters,(regex = any non-whitespace character)
+            parameters = new Regex(@"\S+").Matches(Input).ToList();
+
+            // Test, Remove
+            var test = new TestMe();
+
+            // todo;(?)
+            Type ResourceClass = Type.GetType(resource.Value);
+
             // If all is well, execute dynamically
             Action action = new Action();
-            action.Parameters = parameters;
-            string methodname = command.Value + resource.Value;
-            action.GetType().GetMethod(methodname).Invoke(action, new[] { "Hello" });
-            #region
-            //flags = new Flags(parts);
+            string methodname = this.Command + this.Resource;
+            // todo; gör om. Exceptions verkar krångla med .Invoke()
+            action.GetType().GetMethod(methodname).Invoke(action, new[] { parameters });
 
-            //if (flags.HasHelpFlag())
-            //{
-            //    View.WriteLine("todo; error flag activated");
-            //    return;
-            //}
-            //if (parts.Count < 2)
-            //{
-            //    View.WriteLine("todo; input error");
-            //    return;
-            //}
-            //if (!parts.ContainsItemFrom(AllowedActions["Command"]))
-            //{
-            //    View.WriteLine("todo; Invalid Command");
-            //    return;
-            //}
-            //if (!parts.ContainsItemFrom(AllowedActions["Resource"]))
-            //{
-            //    View.WriteLine("todo; Invalid Resource");
-            //    return;
-            //}
-
-            //command = new Command(parts[0]);
-            //resource = new Resource(parts[1]);
-
-            //if (parts.Count >= 3 && flags.HasFlags())
-            //{
-            //    parameters = new Parameters(parts);
-            //}
-
-            //parameters = new Parameters();
-            #endregion
+        }
+    }
+    public class TestMe
+    {
+        public TestMe()
+        {
+            throw new Exception("TESTTEST");
         }
     }
     public static class View
@@ -108,40 +111,77 @@ namespace AdminTerminal
         }
         public static bool Success() => true;
         public static bool Error() => false;
+        public static void TrowError(string str)
+        {
+            throw new Exception(str);
+        }
     }
     public class Action
     {
-        public List<string> Parameters { get; set; }
-        public void AddArticle(string s)
+        public async void AddArticle(List<Match> p)
         {
-            //var missing = Parameters.Missing(new List<string>() { "Name", "BasePrice", "Type" });
-            // Desc is frivillig
-            if(new List<string>() { "Name", "BasePrice", "Type" }.Count - Parameters.Count !> 0)
-            {
-                throw new Exception($"Missing {Parameters.Count} arguments for 'Add Article'");
-            }
+            // string name, string baseprice, string type, [..ingredients]
             Articles newArticle = new Articles();
-            newArticle.Name = this.Parameters[0];
-            newArticle.BasePrice = (float)Convert.ToDouble(this.Parameters[1]);
-            newArticle.Type = this.Parameters[2];
-            newArticle.PrintKeys();
-            newArticle.PrintRow();
+            List<Ingredients> newIngredients = new List<Ingredients>();
+            var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
+
+            if (p.Count < 4)
+            {
+                throw new TargetInvocationException(new Exception(String.Format("Missing {0} parameter[s]", 4 - p.Count)));
+                //throw new Exception(String.Format("Missing {0} parameter[s]", 4 - p.Count));
+            }
+
+            newArticle.Name = p[0].Value;
+            float basePrice;
+            bool isFloat = float.TryParse(p[1].Value, out basePrice);
+            if (!isFloat)
+            {
+                throw new Exception("Baseprice must be float");
+            }
+            newArticle.BasePrice = basePrice;
+            newArticle.Type = p[2].Value;
+            List<string> incomingingredients = p[3].Value.Split(',').ToList();
+            incomingingredients.FilterEmpty();
+            incomingingredients = incomingingredients.Select(a => a = a.FirstCharToUpper()).ToList();
+
+            // Hämta ner existerande ingredients och jämför om de redan finns
+            var existingingredients = (await repo.GetAllAsync()).ToList();
+            foreach (var item in existingingredients)
+            {
+                if (incomingingredients.Contains(item.Name))
+                {
+                    newIngredients.Add(item);
+                }
+            }
+
+            if (newIngredients.Count != incomingingredients.Count)
+            {
+                throw new Exception("Missing ingredient. 'Add Ingredints x first' todo; specify which missing");
+            }
+
+            View.WriteLine("Added 1 article");
         }
-        public void DeleteArticle(string s) => View.WriteLine("2");
-        public void ListArticle(string s) => View.WriteLine("3");
-        public void EditArticle(string s) => View.WriteLine("4");
-        public void AddItem(string s) => View.WriteLine("5");
-        public void DeleteItem(string s) => View.WriteLine("6");
-        public void ListItem(string s) => View.WriteLine("7");
-        public void EditItem(string s) => View.WriteLine("8");
-        public void AddOrder(string s) => View.WriteLine("9");
-        public void DeleteOrder(string s) => View.WriteLine("10");
-        public void ListOrder(string s) => View.WriteLine("11");
-        public void EditOrder(string s) => View.WriteLine("12");
-        public void AddEmployee(string s) => View.WriteLine("13");
-        public void DeleteEmployee(string s) => View.WriteLine("14");
-        public void ListEmployee(string s) => View.WriteLine("15");
-        public void EditEmployee(string s) => View.WriteLine("16");
+        public void DeleteArticle(List<Match> p) => View.WriteLine("2");
+        public async void ListArticle(List<Match> p)
+        {
+            List<Articles> articles = new List<Articles>();
+            var repo = new MsSqlRepo.ArticlesRepository("Articles");
+            articles = (await repo.GetAllAsync()).ToList();
+            articles.ForEach(article => article.PrintRow());
+        }
+        public void EditArticle(List<Match> p) => View.WriteLine("4");
+        public void AddItem(List<Match> p) => View.WriteLine("5");
+        public void DeleteItem(List<Match> p) => View.WriteLine("6");
+        public void ListItem(List<Match> p) => View.WriteLine("7");
+        public void EditItem(List<Match> p) => View.WriteLine("8");
+        public void AddOrder(List<Match> p) => View.WriteLine("9");
+        public void DeleteOrder(List<Match> p) => View.WriteLine("10");
+        public void ListOrder(List<Match> p) => View.WriteLine("11");
+        public void EditOrder(List<Match> p) => View.WriteLine("12");
+        public void AddEmployee(List<Match> p) => View.WriteLine("13");
+        public void DeleteEmployee(List<Match> p) => View.WriteLine("14");
+        public void ListEmployee(List<Match> p) => View.WriteLine("15");
+        public void EditEmployee(List<Match> p) => View.WriteLine("16");
 
         // Constant.Flag.Callbacks
         public string HelpFlag(string str)
@@ -155,93 +195,6 @@ namespace AdminTerminal
             return "";
         }
     }
-    public class Command
-    {
-        public string Value { get; set; }
-        public bool Success { get; set; }
-        public Match Match { get; set; }
-        public Command(Match value)
-        {
-            Value = value.Value.FirstCharToUpper();
-            Success = value.Success;
-            this.Match = value;
-        }
-    }
-    public class Resource
-    {
-        public string Value { get; set; }
-        public bool Success { get; set; }
-        public Match Match { get; set; }
-        public Resource(Match value)
-        {
-            Value = value.Value.FirstCharToUpper();
-            Success = value.Success;
-            this.Match = value;
-        }
-    }
-    //public class Command
-    //{
-    //    public string Value { get; set; }
-
-    //    private Dictionary<int, Delegate> Callbacks = new Dictionary<int, Delegate>()
-    //    {
-    //        {0, new Func<int>(Hello)}
-    //    };
-    //    public Command(string str)
-    //    {
-    //        Value = str.FirstCharToUpper();
-    //    }
-    //    private static int Hello()
-    //    {
-    //        Console.Write("hello\n");
-    //        return 1;
-    //    }
-    //}
-    //public class Resource
-    //{
-    //    public string Value { get; set; }
-    //    public Resource(string str)
-    //    {
-    //        Value = str.FirstCharToUpper();
-    //    }
-    //}
-    //public class Parameters
-    //{
-    //    public List<string> parameters;
-    //    public Parameters()
-    //    {
-    //        parameters = new List<string>() { };
-    //    }
-    //    public Parameters(List<string> parameters)
-    //    {
-    //        parameters = new List<string>() { };
-    //        parameters.Shift();
-    //        parameters.Shift();
-    //        parameters.AddRange(parameters.Where(param => param.Substring(0) != "-").ToList());
-    //    }
-    //}
-    //public class Flags
-    //{
-    //    private List<string> flags;
-    //    public Flags()
-    //    {
-    //        flags = new List<string>() { };
-    //    }
-    //    public Flags(List<string> parts)
-    //    {
-    //        //filter for --flags
-    //        flags = new List<string>() { };
-    //        flags = parts.Where(part => part.Substring(0) == "-").ToList();
-    //    }
-    //    public bool HasFlags()
-    //    {
-    //        return flags.Count < 0;
-    //    }
-    //    public bool HasHelpFlag()
-    //    {
-    //        return !HasFlags() ? false : flags.Contains("--help") || flags.Contains("--h") ? true : false;
-    //    }
-    //}
     /// <summary>
     /// Custom Extensions
     /// </summary>
@@ -290,9 +243,20 @@ namespace AdminTerminal
             differencial = list.Where(a => !target.Contains(a)).ToList();
             return differencial;
         }
-        public static string FirstCharToUpper(this string str)
+        /// <summary>
+        /// Remove empty elements after Trim()
+        /// </summary>
+        /// <param name="list"></param>
+        public static void FilterEmpty(this List<string> list)
         {
-            return (str.First().ToString().ToUpper() + str.Substring(1,str.Length-1));
+            list = list.Where(el => el.Trim().Length > 0).ToList();
         }
+        public static string FirstCharToUpper(this string input) =>
+            input switch
+            {
+                null => throw new ArgumentNullException(nameof(input)),
+                "" => throw new ArgumentException($"{nameof(input)} cannot be empty", nameof(input)),
+                _ => input.First().ToString().ToUpper() + input.Substring(1)
+            };
     }
 }

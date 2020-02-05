@@ -23,6 +23,8 @@ namespace AdminTerminal
         static void Main(string[] args)
         {
             Global.IsRunning = true;
+            // Load env
+            Helper.Environment.LoadEnvFile();
             while (Global.IsRunning)
             {
                 try
@@ -37,5 +39,4 @@ namespace AdminTerminal
             }
         }
     }
-
 }
