@@ -10,6 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 
+/// <summary>
+/// A generic repository. Basic CRUD operations.
+/// </summary>
+
 namespace MsSqlRepo
 {
     public abstract class GenericRepository<T> : IGenericRepository<T> where T : class
@@ -37,7 +41,6 @@ namespace MsSqlRepo
             
             return new SqlConnection(connectionString);
         }
-
         /// <summary>
         /// Open new connection and return it for use
         /// </summary>
@@ -48,9 +51,11 @@ namespace MsSqlRepo
             conn.Open();
             return conn;
         }
-
         private IEnumerable<PropertyInfo> GetProperties => typeof(T).GetProperties();
-
+        /// <summary>
+        /// Gets all data from table
+        /// </summary>
+        /// <returns>Container of tabledata</returns>
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             using (var connection = CreateConnection())
@@ -58,7 +63,11 @@ namespace MsSqlRepo
                 return await connection.QueryAsync<T>($"SELECT * FROM {_tableName}");
             }
         }
-
+        /// <summary>
+        /// Delete a specific row
+        /// </summary>
+        /// <param name="id">Identification no.</param>
+        /// <returns></returns>
         public async Task DeleteRowAsync(int id)
         {
             using (var connection = CreateConnection())
@@ -66,7 +75,11 @@ namespace MsSqlRepo
                 await connection.ExecuteAsync($"DELETE FROM {_tableName} WHERE Id=@Id", new { Id = id });
             }
         }
-
+        /// <summary>
+        /// Get specific row
+        /// </summary>
+        /// <param name="id">Identification no.</param>
+        /// <returns>An object with table data</returns>
         public async Task<T> GetAsync(int id)
         {
             using (var connection = CreateConnection())
@@ -78,7 +91,11 @@ namespace MsSqlRepo
                 return result;
             }
         }
-
+        /// <summary>
+        /// Inserts a range of tabledata
+        /// </summary>
+        /// <param name="list">A list of tabledata</param>
+        /// <returns>No. inserted rows</returns>
         public async Task<int> SaveRangeAsync(IEnumerable<T> list)
         {
             var inserted = 0;
@@ -90,7 +107,11 @@ namespace MsSqlRepo
 
             return inserted;
         }
-
+        /// <summary>
+        /// Gets properties from class
+        /// </summary>
+        /// <param name="listOfProperties"></param>
+        /// <returns></returns>
         private static List<string> GenerateListOfProperties(IEnumerable<PropertyInfo> listOfProperties)
         {
             return (from prop in listOfProperties
@@ -98,8 +119,11 @@ namespace MsSqlRepo
                     where attributes.Length <= 0 || (attributes[0] as DescriptionAttribute)?.Description != "ignore"
                     select prop.Name).ToList();
         }
-
-
+        /// <summary>
+        /// Inserts object to table
+        /// </summary>
+        /// <param name="t">Object</param>
+        /// <returns></returns>
         public async Task InsertAsync(T t)
         {
             var insertQuery = GenerateInsertQuery(t);
@@ -109,7 +133,11 @@ namespace MsSqlRepo
                 await connection.ExecuteAsync(insertQuery, t);
             }
         }
-
+        /// <summary>
+        /// Generate an sql string with insert info
+        /// </summary>
+        /// <param name="t">Object to generate insert query</param>
+        /// <returns>Sql string</returns>
         public string GenerateInsertQuery(T t)
         {
             var insertQuery = new StringBuilder($"INSERT INTO {_tableName} ");
@@ -140,6 +168,10 @@ namespace MsSqlRepo
             Console.WriteLine("insertQuery: " + insertQuery.ToString());
             return insertQuery.ToString();
         }
+        /// <summary>
+        /// Generate an sql string with insert info
+        /// </summary>
+        /// <returns>Sql query</returns>
         private string GenerateInsertQuery()
         {
             var insertQuery = new StringBuilder($"INSERT INTO {_tableName} ");
@@ -163,6 +195,11 @@ namespace MsSqlRepo
             return insertQuery.ToString();
         }
 
+        /// <summary>
+        /// Updates a row of table data
+        /// </summary>
+        /// <param name="t">Object to update</param>
+        /// <returns></returns>
         public async Task UpdateAsync(T t)
         {
             var updateQuery = GenerateUpdateQuery(t);
@@ -173,6 +210,11 @@ namespace MsSqlRepo
             }
         }
 
+        /// <summary>
+        /// generates an update sql query string from object
+        /// </summary>
+        /// <param name="t">Object to generate from</param>
+        /// <returns></returns>
         private string GenerateUpdateQuery(T t)
         {
             var updateQuery = new StringBuilder($"UPDATE {_tableName} SET ");
@@ -199,6 +241,10 @@ namespace MsSqlRepo
 
             return updateQuery.ToString();
         }
+        /// <summary>
+        /// generates an update sql query string
+        /// </summary>
+        /// <returns></returns>
         private string GenerateUpdateQuery()
         {
             var updateQuery = new StringBuilder($"UPDATE {_tableName} SET ");

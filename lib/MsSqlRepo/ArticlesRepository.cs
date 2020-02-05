@@ -16,10 +16,10 @@ namespace MsSqlRepo
         {
             _tableName = tableName;
         }
-
-
-
-        
+        /// <summary>
+        /// Gets all articles and ingredients from table
+        /// </summary>
+        /// <returns>List with articles with ingredients</returns>
         new public async Task<IEnumerable<Articles>> GetAllAsync()
         {
             using (var connection = base.CreateConnection())
@@ -32,16 +32,17 @@ namespace MsSqlRepo
                 return articles;
             }
         }
-
-
+        /// <summary>
+        /// Gets all articles with ingredients from an order.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns>Container with list of articles</returns>
         new public async Task<IEnumerable<Articles>> GetAllAsync(Orders order)
         {
             using (var connection = base.CreateConnection())
             {
-
                 IEnumerable<ArticleOrders> articleOrders = await connection.QueryAsync<ArticleOrders>($"SELECT * FROM ArticleOrders WHERE OrdersID=@Id", new { Id = order.ID });
                 List<Articles> articles = new List<Articles>();
-
                 string sql = $"select Ingredients.* FROM ARTICLES INNER JOIN ArticleOrders ON Articles.ID = ArticleOrders.ArticlesID inner join ArticleOrdersIngredients on ArticleOrdersIngredients.ArticleOrdersID = ArticleOrders.ID inner join Ingredients on Ingredients.ID = ArticleOrdersIngredients.IngredientsID WHERE ArticleOrders.OrdersID = @OrdersID and ArticleOrders.ID = @ArticleOrdersID";
 
                 foreach (ArticleOrders articleOrdersItem in articleOrders)
@@ -51,15 +52,14 @@ namespace MsSqlRepo
                     article.Ingredients = (await connection.QueryAsync<Ingredients>(sql, new { OrdersID = order.ID, ArticleOrdersID = articleOrdersItem.ID })).ToList();
                     articles.Add(article);
                 }
-
-                //string sql = $"select ArticleOrdersIngredients.* FROM ARTICLES INNER JOIN ArticleOrders ON Articles.ID = ArticleOrders.ArticlesID inner join ArticleOrdersIngredients on ArticleOrdersIngredients.ArticleOrdersID = ArticleOrders.ID WHERE ArticleOrders.OrdersID = @OrdersID and ArticleOrders.ID = @ArticleOrdersID";
-
-
                 return (IEnumerable<Articles>)articles;
             }
-            
         }
-
+        /// <summary>
+        /// Gets a specific article with ingredients
+        /// </summary>
+        /// <param name="id">Identification no.</param>
+        /// <returns></returns>
         new public async Task<Articles> GetAsync(int id)
         {
             using (var connection = CreateConnection())
@@ -71,7 +71,5 @@ namespace MsSqlRepo
                 return result;
             }
         }
-
-
     }
 }
