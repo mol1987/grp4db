@@ -86,32 +86,20 @@ namespace Test
                 TestTool.PrintSuccess("[Success] for TestEnvVariables()\n");
             }
             return res;
-        }
+        }  
 
         static async Task TestRepo2()
         {
-
-            var repo = new ArticlesRepository("Articles");
             List<Articles> articles = new List<Articles>();
-            articles = (await repo.GetAllAsync()).ToList();
+            articles = await articles.getArticles();
             TestTool.PrintSuccess("Got {0} row from Articles\n", articles.Count());
 
-            List<Articles> tempArticles = articles.GetRange(0, 2);
-
-            var repoOrders = new OrdersRepository("Orders");
-
-
             Orders order = new Orders { CustomerID = 10};
+            order.Articles = articles.GetRange(0, 2);
+            await order.insertOrder();
 
-            await repoOrders.InsertAsync(order);
-
-
-
-            await repoOrders.MakeOrderAsync(order, tempArticles);
-
-            List<Articles> orderListArticles = (await repo.GetAllAsync(order)).ToList();
-
-
+            List<Articles> orderListArticles = new List<Articles>();
+            orderListArticles = await orderListArticles.getArticlesFromOrder(order);
             foreach (var item in orderListArticles)
             {
                 Console.WriteLine(item.Name + " " + item.Type);
@@ -120,8 +108,6 @@ namespace Test
                     Console.Write(item2.Name.Trim() + ", ");
                 }
             }
-
-
         }
 
         static async Task TestRepo()
