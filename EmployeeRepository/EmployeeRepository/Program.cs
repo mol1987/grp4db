@@ -7,6 +7,7 @@ namespace EmployeeRepository
     {
         static async Task Main(string[] args)
         {
+            // calling the repository class
             RepositoryEmployee repo1 = new RepositoryEmployee();
             foreach ( Employees employee in await repo1.GetAllEmployees())
             {

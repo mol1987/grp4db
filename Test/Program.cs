@@ -102,12 +102,19 @@ namespace Test
             orderListArticles = await orderListArticles.getArticlesFromOrder(order);
             foreach (var item in orderListArticles)
             {
-                Console.WriteLine(item.Name + " " + item.Type);
+               
+                Console.WriteLine("\n" +item.Name + " " + item.Type) ;
+               
+                
                 foreach (var item2 in item.Ingredients)
                 {
                     Console.Write(item2.Name.Trim() + ", ");
+                    
+
                 }
+               
             }
+            
         }
 
         static async Task TestRepo()
