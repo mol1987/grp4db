@@ -97,6 +97,7 @@ namespace AdminTerminal
                 case "DeleteEmployee":
                     break;
                 case "ListEmployee":
+                    endpoint.ListEmployee(parameters);
                     break;
                 case "UpdateEmployee":
                     break;
@@ -105,6 +106,7 @@ namespace AdminTerminal
                 case "DeleteIngredient":
                     break;
                 case "ListIngredient":
+                    endpoint.ListIngredients(parameters);
                     break;
                 case "UpdateIngredient":
                     break;
@@ -139,46 +141,50 @@ namespace AdminTerminal
     {
         public async void AddArticle(List<Match> p)
         {
+            var article = new Articles();
+            var repo = new MsSqlRepo.ArticlesRepository("Articles");
+            await repo.InsertAsync(article);
+
             // string name, string baseprice, string type, [..ingredients]
-            Articles newArticle = new Articles();
-            List<Ingredients> newIngredients = new List<Ingredients>();
-            var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
+            //Articles newArticle = new Articles();
+            //List<Ingredients> newIngredients = new List<Ingredients>();
+            //var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
 
-            if (p.Count < 4)
-            {
-                throw new TargetInvocationException(new Exception(String.Format("Missing {0} parameter[s]", 4 - p.Count)));
-                //throw new Exception(String.Format("Missing {0} parameter[s]", 4 - p.Count));
-            }
+            //if (p.Count < 4)
+            //{
+            //    throw new TargetInvocationException(new Exception(String.Format("Missing {0} parameter[s]", 4 - p.Count)));
+            //    //throw new Exception(String.Format("Missing {0} parameter[s]", 4 - p.Count));
+            //}
 
-            newArticle.Name = p[0].Value;
-            float basePrice;
-            bool isFloat = float.TryParse(p[1].Value, out basePrice);
-            if (!isFloat)
-            {
-                throw new Exception("Baseprice must be float");
-            }
-            newArticle.BasePrice = basePrice;
-            newArticle.Type = p[2].Value;
-            List<string> incomingingredients = p[3].Value.Split(',').ToList();
-            incomingingredients.FilterEmpty();
-            incomingingredients = incomingingredients.Select(a => a = a.FirstCharToUpper()).ToList();
+            //newArticle.Name = p[0].Value;
+            //float basePrice;
+            //bool isFloat = float.TryParse(p[1].Value, out basePrice);
+            //if (!isFloat)
+            //{
+            //    throw new Exception("Baseprice must be float");
+            //}
+            //newArticle.BasePrice = basePrice;
+            //newArticle.Type = p[2].Value;
+            //List<string> incomingingredients = p[3].Value.Split(',').ToList();
+            //incomingingredients.FilterEmpty();
+            //incomingingredients = incomingingredients.Select(a => a = a.FirstCharToUpper()).ToList();
 
-            // Hämta ner existerande ingredients och jämför om de redan finns
-            var existingingredients = (await repo.GetAllAsync()).ToList();
-            foreach (var item in existingingredients)
-            {
-                if (incomingingredients.Contains(item.Name))
-                {
-                    newIngredients.Add(item);
-                }
-            }
+            //// Hämta ner existerande ingredients och jämför om de redan finns
+            //var existingingredients = (await repo.GetAllAsync()).ToList();
+            //foreach (var item in existingingredients)
+            //{
+            //    if (incomingingredients.Contains(item.Name))
+            //    {
+            //        newIngredients.Add(item);
+            //    }
+            //}
 
-            if (newIngredients.Count != incomingingredients.Count)
-            {
-                throw new Exception("Missing ingredient. 'Add Ingredints x first' todo; specify which missing");
-            }
+            //if (newIngredients.Count != incomingingredients.Count)
+            //{
+            //    throw new Exception("Missing ingredient. 'Add Ingredints x first' todo; specify which missing");
+            //}
 
-            View.WriteLine("Added 1 article");
+            //View.WriteLine("Added 1 article");
         }
         public async void DeleteArticle(List<Match> p)
         {
@@ -200,17 +206,34 @@ namespace AdminTerminal
             articles.ForEach(article => article.PrintRow());
         }
         public void EditArticle(List<Match> p) => View.WriteLine("4");
-        public void AddItem(List<Match> p) => View.WriteLine("5");
-        public void DeleteItem(List<Match> p) => View.WriteLine("6");
-        public void ListItem(List<Match> p) => View.WriteLine("7");
-        public void EditItem(List<Match> p) => View.WriteLine("8");
+        public void AddIngredients(List<Match> p) => View.WriteLine("5");
+        public void DeleteIngredients(List<Match> p) => View.WriteLine("6");
+        public async void ListIngredients(List<Match> p)
+        {
+            var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
+            var res = (await repo.GetAllAsync());
+            foreach (var item in res)
+            {
+                Console.WriteLine($"{item.ID} {item.Name} {item.Price}");
+            }
+        }
+        public void EditIngredients(List<Match> p) => View.WriteLine("8");
         public void AddOrder(List<Match> p) => View.WriteLine("9");
         public void DeleteOrder(List<Match> p) => View.WriteLine("10");
         public void ListOrder(List<Match> p) => View.WriteLine("11");
         public void EditOrder(List<Match> p) => View.WriteLine("12");
         public void AddEmployee(List<Match> p) => View.WriteLine("13");
         public void DeleteEmployee(List<Match> p) => View.WriteLine("14");
-        public void ListEmployee(List<Match> p) => View.WriteLine("15");
+        public async void ListEmployee(List<Match> p)
+        {
+            var repo = new MsSqlRepo.EmployeesRepository("Employees");
+            var res = (await repo.GetAllAsync());
+            foreach (var item in res)
+            {
+                Console.WriteLine($"{item.ID} {item.Name} {item.LastName} {item.Email} {item.Password}");
+            }
+
+        }
         public void EditEmployee(List<Match> p) => View.WriteLine("16");
 
         // Constant.Flag.Callbacks
