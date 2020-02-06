@@ -263,7 +263,17 @@ namespace MsSqlRepo
 
             return updateQuery.ToString();
         }
-
+        
+        public async Task<int> InsertWithReturnAsync(T t)
+        {
+            var insertQuery = GenerateInsertQuery(t);
+            
+            using (var connection = CreateConnection())
+            {
+                var res = await connection.ExecuteAsync(insertQuery, t);
+                return res;
+            }
+        }
 
     }
 }

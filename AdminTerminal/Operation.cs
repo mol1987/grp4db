@@ -83,6 +83,7 @@ namespace AdminTerminal
             switch (methodname)
             {
                 case "AddArticle":
+                    endpoint.AddArticle(parameters);
                     break;
                 case "DeleteArticle":
                     endpoint.DeleteArticle(parameters);
@@ -117,13 +118,6 @@ namespace AdminTerminal
             }
         }
     }
-    public class TestMe
-    {
-        public TestMe()
-        {
-            throw new Exception("TESTTEST");
-        }
-    }
     public static class View
     {
         public static void WriteLine(string str)
@@ -143,48 +137,7 @@ namespace AdminTerminal
         {
             var article = new Articles();
             var repo = new MsSqlRepo.ArticlesRepository("Articles");
-            await repo.InsertAsync(article);
-
-            // string name, string baseprice, string type, [..ingredients]
-            //Articles newArticle = new Articles();
-            //List<Ingredients> newIngredients = new List<Ingredients>();
-            //var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
-
-            //if (p.Count < 4)
-            //{
-            //    throw new TargetInvocationException(new Exception(String.Format("Missing {0} parameter[s]", 4 - p.Count)));
-            //    //throw new Exception(String.Format("Missing {0} parameter[s]", 4 - p.Count));
-            //}
-
-            //newArticle.Name = p[0].Value;
-            //float basePrice;
-            //bool isFloat = float.TryParse(p[1].Value, out basePrice);
-            //if (!isFloat)
-            //{
-            //    throw new Exception("Baseprice must be float");
-            //}
-            //newArticle.BasePrice = basePrice;
-            //newArticle.Type = p[2].Value;
-            //List<string> incomingingredients = p[3].Value.Split(',').ToList();
-            //incomingingredients.FilterEmpty();
-            //incomingingredients = incomingingredients.Select(a => a = a.FirstCharToUpper()).ToList();
-
-            //// Hämta ner existerande ingredients och jämför om de redan finns
-            //var existingingredients = (await repo.GetAllAsync()).ToList();
-            //foreach (var item in existingingredients)
-            //{
-            //    if (incomingingredients.Contains(item.Name))
-            //    {
-            //        newIngredients.Add(item);
-            //    }
-            //}
-
-            //if (newIngredients.Count != incomingingredients.Count)
-            //{
-            //    throw new Exception("Missing ingredient. 'Add Ingredints x first' todo; specify which missing");
-            //}
-
-            //View.WriteLine("Added 1 article");
+            var res = (await repo.InsertWithReturnAsync(article));
         }
         public async void DeleteArticle(List<Match> p)
         {
