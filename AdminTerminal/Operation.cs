@@ -25,10 +25,6 @@ namespace AdminTerminal
         {
             Input = input;
             OriginalInput = input; // Kept for future comparisons/checks
-            //if (!res)
-            //{
-            //    throw new Exception("Server connection error, try again later or contact system adminstrator");
-            //}
 
             Input = Input.TrimStart();
             List<Match> parameters = new List<Match>();
@@ -82,18 +78,41 @@ namespace AdminTerminal
             // Parse the rest into parameters,(regex = any non-whitespace character)
             parameters = new Regex(@"\S+").Matches(Input).ToList();
 
-            // Test, Remove
-            var test = new TestMe();
-
-            // todo;(?)
-            Type ResourceClass = Type.GetType(resource.Value);
-
-            // If all is well, execute dynamically
-            Action action = new Action();
             string methodname = this.Command + this.Resource;
-            // todo; gör om. Exceptions verkar krångla med .Invoke()
-            action.GetType().GetMethod(methodname).Invoke(action, new[] { parameters });
+            var endpoint = new EndPoint();
+            switch (methodname)
+            {
+                case "AddArticle":
+                    break;
+                case "DeleteArticle":
+                    endpoint.DeleteArticle(parameters);
+                    break;
+                case "ListArticle":
+                    endpoint.ListArticle(parameters);
+                    break;
+                case "UpdateArticle":
+                    break;
+                case "AddEmployee":
+                    break;
+                case "DeleteEmployee":
+                    break;
+                case "ListEmployee":
+                    break;
+                case "UpdateEmployee":
+                    break;
+                case "AddIngredient":
+                    break;
+                case "DeleteIngredient":
+                    break;
+                case "ListIngredient":
+                    break;
+                case "UpdateIngredient":
+                    break;
+                default:
+                    throw new Exception("Error occured[warning]");
+                    break;
 
+            }
         }
     }
     public class TestMe
@@ -116,7 +135,7 @@ namespace AdminTerminal
             throw new Exception(str);
         }
     }
-    public class Action
+    public class EndPoint
     {
         public async void AddArticle(List<Match> p)
         {
@@ -161,12 +180,23 @@ namespace AdminTerminal
 
             View.WriteLine("Added 1 article");
         }
-        public void DeleteArticle(List<Match> p) => View.WriteLine("2");
+        public async void DeleteArticle(List<Match> p)
+        {
+            int id;
+            if (!Int32.TryParse(p[0].Value, out id))
+            {
+                throw new Exception("Id is invalid");
+            };
+            var repo = new MsSqlRepo.ArticlesRepository("Articles");
+            await repo.DeleteRowAsync(id);
+            View.WriteLine(String.Format("Deleted row {0}", id));
+        }
         public async void ListArticle(List<Match> p)
         {
             List<Articles> articles = new List<Articles>();
             var repo = new MsSqlRepo.ArticlesRepository("Articles");
             articles = (await repo.GetAllAsync()).ToList();
+            articles[0].PrintKeys();
             articles.ForEach(article => article.PrintRow());
         }
         public void EditArticle(List<Match> p) => View.WriteLine("4");

@@ -18,7 +18,7 @@ namespace AdminTerminal
         };
         public static Dictionary<string, Flag> Flags = new Dictionary<string, Flag>()
         {
-            {"help", new Flag{Key="help", Varations = new List<string>(){"-help","--help","-h"}, Callback = new Action().HelpFlag }}
+            {"help", new Flag{Key="help", Varations = new List<string>(){"-help","--help","-h"}, Callback = new EndPoint().HelpFlag }}
             //new Flag{Key="help", Varations = new List<string>(){"-help","--help","-h"}, Callback = new Action().HelpFlag }
             // -p ?
         };
