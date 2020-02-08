@@ -92,24 +92,31 @@ namespace AdminTerminal
                     endpoint.ListArticle(parameters);
                     break;
                 case "UpdateArticle":
+                    endpoint.UpdateArticle(parameters);
                     break;
                 case "AddEmployee":
+                    endpoint.AddEmployee(parameters);
                     break;
                 case "DeleteEmployee":
+                    endpoint.DeleteEmployee(parameters);
                     break;
                 case "ListEmployee":
                     endpoint.ListEmployee(parameters);
                     break;
                 case "UpdateEmployee":
+                    endpoint.UpdateEmployee(parameters);
                     break;
                 case "AddIngredient":
+                    endpoint.AddIngredients(parameters);
                     break;
                 case "DeleteIngredient":
+                    endpoint.DeleteIngredients(parameters);
                     break;
                 case "ListIngredient":
                     endpoint.ListIngredients(parameters);
                     break;
                 case "UpdateIngredient":
+                    endpoint.DeleteIngredients(parameters);
                     break;
                 default:
                     throw new Exception("Error occured[warning]");
@@ -133,12 +140,22 @@ namespace AdminTerminal
     }
     public class EndPoint
     {
+        /// <summary>
+        /// > Add Article $name $price $type $ingredients
+        /// > $returns $id to screen
+        /// </summary>
+        /// <param name="p"></param>
         public async void AddArticle(List<Match> p)
         {
             var article = new Articles();
             var repo = new MsSqlRepo.ArticlesRepository("Articles");
-            var res = (await repo.InsertWithReturnAsync(article));
+            int id = (await repo.InsertWithReturnAsync(article));
+            View.WriteLine(String.Format($"Inserted with id={id}"));
         }
+        /// <summary>
+        /// > Delete Article $id
+        /// </summary>
+        /// <param name="p"></param>
         public async void DeleteArticle(List<Match> p)
         {
             int id;
@@ -150,6 +167,10 @@ namespace AdminTerminal
             await repo.DeleteRowAsync(id);
             View.WriteLine(String.Format("Deleted row {0}", id));
         }
+        /// <summary>
+        /// > List Articles
+        /// </summary>
+        /// <param name="p"></param>
         public async void ListArticle(List<Match> p)
         {
             List<Articles> articles = new List<Articles>();
@@ -158,25 +179,36 @@ namespace AdminTerminal
             articles[0].PrintKeys();
             articles.ForEach(article => article.PrintRow());
         }
-        public void EditArticle(List<Match> p) => View.WriteLine("4");
-        public void AddIngredients(List<Match> p) => View.WriteLine("5");
-        public void DeleteIngredients(List<Match> p) => View.WriteLine("6");
-        public async void ListIngredients(List<Match> p)
+        /// <summary>
+        /// > Update Article $todo
+        /// </summary>
+        /// <param name="p"></param>
+        public async void UpdateArticle(List<Match> p) => View.WriteLine("4");
+        public async void UpdateIngredients(List<Match> p) => View.WriteLine("8");
+        /// <summary>
+        /// > Add Employee $firstname $lastname $email $password
+        /// </summary>
+        /// <param name="p"></param>
+        public async void AddEmployee(List<Match> p) => View.WriteLine("13");
+        /// <summary>
+        /// > Delete Employee $id
+        /// </summary>
+        /// <param name="p"></param>
+        public async void DeleteEmployee(List<Match> p)
         {
-            var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
-            var res = (await repo.GetAllAsync());
-            foreach (var item in res)
+            int id;
+            if (!Int32.TryParse(p[0].Value, out id))
             {
-                Console.WriteLine($"{item.ID} {item.Name} {item.Price}");
-            }
+                throw new Exception("Id is invalid");
+            };
+            var repo = new MsSqlRepo.EmployeesRepository("Employees");
+            await repo.DeleteRowAsync(id);
+            View.WriteLine(String.Format("Deleted row {0}", id));
         }
-        public void EditIngredients(List<Match> p) => View.WriteLine("8");
-        public void AddOrder(List<Match> p) => View.WriteLine("9");
-        public void DeleteOrder(List<Match> p) => View.WriteLine("10");
-        public void ListOrder(List<Match> p) => View.WriteLine("11");
-        public void EditOrder(List<Match> p) => View.WriteLine("12");
-        public void AddEmployee(List<Match> p) => View.WriteLine("13");
-        public void DeleteEmployee(List<Match> p) => View.WriteLine("14");
+        /// <summary>
+        /// List Employees
+        /// </summary>
+        /// <param name="p"></param>
         public async void ListEmployee(List<Match> p)
         {
             var repo = new MsSqlRepo.EmployeesRepository("Employees");
@@ -187,9 +219,60 @@ namespace AdminTerminal
             }
 
         }
-        public void EditEmployee(List<Match> p) => View.WriteLine("16");
-
-        // Constant.Flag.Callbacks
+        /// <summary>
+        /// > Update Employee
+        /// </summary>
+        /// <param name="p"></param>
+        public async void UpdateEmployee(List<Match> p) => View.WriteLine("16");
+        /// <summary>
+        /// > Add Ingredient $name $price
+        /// </summary>
+        /// <param name="p"></param>
+        public async void AddIngredients(List<Match> p){
+            Ingredients ingredients = new Ingredients();
+            ingredients.Name = p[0].Value;
+            ingredients.Price = Int32.Parse(p[1].Value);
+            var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
+            await repo.DryInsert(ingredients);
+            
+        }
+        /// <summary>
+        /// > Delete Ingredient $id
+        /// </summary>
+        /// <param name="p"></param>
+        public async void DeleteIngredients(List<Match> p)
+        {
+            int id;
+            if (!Int32.TryParse(p[0].Value, out id))
+            {
+                throw new Exception("Id is invalid");
+            };
+            var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
+            await repo.DeleteRowAsync(id);
+            View.WriteLine(String.Format("Deleted row {0}", id));
+        }
+        /// <summary>
+        /// > List Ingrededients
+        /// </summary>
+        /// <param name="p"></param>
+        public async void ListIngredients(List<Match> p)
+        {
+            var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
+            var res = (await repo.GetAllAsync());
+            foreach (var item in res)
+            {
+                Console.WriteLine($"{item.ID} {item.Name} {item.Price}");
+            }
+        }
+        //public async void AddOrder(List<Match> p) => View.WriteLine("9");
+        //public async void DeleteOrder(List<Match> p) => View.WriteLine("10");
+        //public async void ListOrder(List<Match> p) => View.WriteLine("11");
+        //public async void EditOrder(List<Match> p) => View.WriteLine("12");
+        /// <summary>
+        /// > -help
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public string HelpFlag(string str)
         {
             Console.WriteLine("Help flag detected, do something here");

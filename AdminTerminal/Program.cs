@@ -34,7 +34,7 @@ namespace AdminTerminal
                 catch (Exception e)
                 {
                     //todo; create more specific exceptions
-                    Console.WriteLine($"Error => {e.Message}, {e.GetType().Name}");
+                    Console.WriteLine($"Unsuccesful => {e.Message}, {e.GetType().Name}");
                 }
             }
         }

@@ -12,10 +12,7 @@ namespace TypeLib
         public float? BasePrice { get; set; }
         public string? Type { get; set; }
         public ArticleOrders? ArticleOrder { get; set; }
-
         public List<Ingredients> Ingredients { get; set; }
-
-      
         /// <summary>
         /// Prints out neatly for list
         /// </summary>

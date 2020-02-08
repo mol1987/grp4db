@@ -6,21 +6,67 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using TypeLib;
+using System.Timers;
 
 namespace Test
 {
     class Program
     {
+        private static Timer timer;
+        private static int CurrentStep = 1;
+        private static int MaxSteps = 4;
         static async Task Main(string[] args)
         {
-
+            SetConsoleTitleText("Progress");
+            StartTimer();
             var a = await TestEnvironment();
+            IterateConsoleTitleText();
             var b = await TestEnvVariables();
-            //await TestRepo();
-            await TestRepo2();
+            IterateConsoleTitleText();
+            await TestRepo();
+            //IterateConsoleTitleText();
+            //await TestRepo2();
+            IterateConsoleTitleText();
             Console.WriteLine("press any key to quit");
             Console.ReadKey();
             
+        }
+
+        private static async void IterateConsoleTitleText(int i = 1)
+        {
+            CurrentStep += i;
+        }
+        private static async void SetConsoleTitleText(string text, bool append = false)
+        {
+            if (append)
+            {
+                Console.Title = Console.Title + text;
+                return;
+            }
+            Console.Title = String.Format($"[{CurrentStep}/{MaxSteps}]{"Progress"}{""}");
+        }
+        private static async void StartTimer()
+        {
+            timer = new System.Timers.Timer();
+            timer.Interval = 80;
+            timer.Enabled = true;
+            timer.Elapsed += (s, e) => 
+            {
+                OnUpdate(s,e);
+            };
+        }
+        private static async void OnUpdate(object state, ElapsedEventArgs ev)
+        {
+            int dotCount = Console.Title.Split('.').Length - 1;
+            if (dotCount > 5)
+            {
+                SetConsoleTitleText("Progress");
+            }
+            SetConsoleTitleText(".", true);
+        }
+        static async void DisplayProgress(object state, ElapsedEventArgs ev)
+        {
+            int consoleMaxWidth = Console.WindowWidth; 
         }
         static async Task RunTests()
         {

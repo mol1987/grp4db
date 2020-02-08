@@ -11,8 +11,8 @@ namespace AdminTerminal
         public static List<RegexCommand> Regex = new List<RegexCommand>()
         {
             new RegexCommand("command", @"(?<command>)^[Aa]dd|^[Dd]elete|^[Uu]pdate|^[Ll]ist"),
-            new RegexCommand("resource", @"(?<resource>)[Aa]rticle|[Ee]mployee|[Ii]ngredients?"),
-            new RegexCommand("flags", @"(?<flag>-?-\w+)"),
+            new RegexCommand("resource", @"(?<resource>)[Aa]rticles?|[Ee]mployees?|[Ii]ngredients?"),
+            new RegexCommand("flags", new Regex(@"(?<flag>-?-\w+)")),
             new RegexCommand("quotationParam", new Regex(@"(['""`][a-zA-Z0-9]+['""`])")),
             //new RegexCommand("AddArticle", @"(?<name>)")
         };

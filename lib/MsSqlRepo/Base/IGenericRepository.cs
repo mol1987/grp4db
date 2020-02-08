@@ -13,5 +13,6 @@ namespace MsSqlRepo
         Task<int> SaveRangeAsync(IEnumerable<T> list);
         Task UpdateAsync(T t);
         Task InsertAsync(T t);
+        Task DryInsert(T t);
     }
 }

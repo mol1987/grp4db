@@ -263,7 +263,11 @@ namespace MsSqlRepo
 
             return updateQuery.ToString();
         }
-        
+        /// <summary>
+        /// Like InsertAsync() but with integer-id return
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
         public async Task<int> InsertWithReturnAsync(T t)
         {
             var insertQuery = GenerateInsertQuery(t);
@@ -272,6 +276,22 @@ namespace MsSqlRepo
             {
                 var res = await connection.ExecuteAsync(insertQuery, t);
                 return res;
+            }
+        }
+        /// <summary>
+        /// Dry run insert with rollback. Test Insert functionaility without adding data
+        /// </summary>
+        /// <returns></returns>
+        public async Task DryInsert(T t)
+        {
+            var insertQuery = GenerateInsertQuery(t);
+            StringBuilder sb = new StringBuilder(insertQuery);
+            sb.Insert(0, "BEGIN TRAN Tr1");
+            sb.Append("ROLLBACK TRAN Tr1;");
+            using (var connection = CreateConnection())
+            {
+                var res = await connection.ExecuteAsync(sb.ToString(), t);
+                var x = res;
             }
         }
 
