@@ -165,7 +165,6 @@ namespace MsSqlRepo
             insertQuery
                 .Remove(insertQuery.Length - 1, 1)
                 .Append(")");
-            Console.WriteLine("insertQuery: " + insertQuery.ToString());
             return insertQuery.ToString();
         }
         /// <summary>

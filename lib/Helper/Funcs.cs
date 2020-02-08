@@ -9,9 +9,18 @@ namespace Helper
     {
         public dynamic ParseValue(string val)
         {
-            var floatRegexp = new Regex(@"^[-+]?([0-9]*\.[0-9]+|[0-9]+)$");
-            Int32 i = 0;
-            return i;
+            string stringval;
+            int intval;
+            float floatval;
+            if (float.TryParse(val, out floatval))
+            {
+                return floatval;
+            };
+            if (Int32.TryParse(val, out intval))
+            {
+                return intval;
+            };
+            return val;
         }
     }
 }

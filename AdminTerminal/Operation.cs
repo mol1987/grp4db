@@ -149,8 +149,8 @@ namespace AdminTerminal
         {
             var article = new Articles();
             var repo = new MsSqlRepo.ArticlesRepository("Articles");
-            int id = (await repo.InsertWithReturnAsync(article));
-            View.WriteLine(String.Format($"Inserted with id={id}"));
+            int n = (await repo.InsertWithReturnAsync(article));
+            View.WriteLine(String.Format($"Added {n} Article"));
         }
         /// <summary>
         /// > Delete Article $id
@@ -189,7 +189,17 @@ namespace AdminTerminal
         /// > Add Employee $firstname $lastname $email $password
         /// </summary>
         /// <param name="p"></param>
-        public async void AddEmployee(List<Match> p) => View.WriteLine("13");
+        public async void AddEmployee(List<Match> p)
+        {
+            Employees newEmployee = new Employees();
+            newEmployee.Name = p[0].Value;
+            newEmployee.LastName = p[1].Value;
+            newEmployee.Email = p[2].Value;
+            newEmployee.Password = p[3].Value;
+            var repo = new MsSqlRepo.EmployeesRepository("Employees");
+            int n = (await repo.InsertWithReturnAsync(newEmployee));
+            View.WriteLine(String.Format($"Added {n} employee"));
+        }
         /// <summary>
         /// > Delete Employee $id
         /// </summary>
@@ -203,7 +213,7 @@ namespace AdminTerminal
             };
             var repo = new MsSqlRepo.EmployeesRepository("Employees");
             await repo.DeleteRowAsync(id);
-            View.WriteLine(String.Format("Deleted row {0}", id));
+            View.WriteLine(String.Format($"Deleted row with id={id}"));
         }
         /// <summary>
         /// List Employees
@@ -233,8 +243,8 @@ namespace AdminTerminal
             ingredients.Name = p[0].Value;
             ingredients.Price = Int32.Parse(p[1].Value);
             var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
-            await repo.DryInsert(ingredients);
-            
+            int id = (await repo.InsertWithReturnAsync(ingredients));
+            View.WriteLine(String.Format($"Added {1} Ingredient"));
         }
         /// <summary>
         /// > Delete Ingredient $id
