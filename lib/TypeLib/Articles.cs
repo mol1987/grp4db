@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace TypeLib
 {
@@ -14,18 +15,23 @@ namespace TypeLib
         public ArticleOrders? ArticleOrder { get; set; }
         public List<Ingredients> Ingredients { get; set; }
         /// <summary>
-        /// Prints out neatly for list
+        /// Print out keys with $n for padding distance
         /// </summary>
-        public void PrintRow()
+        /// <param name="n"></param>
+        public void PrintKeys(int n = 16)
         {
-
-            Console.WriteLine("..........................");
-
-            Console.Write("{0} {1} {2} {3} \n", ID, Name.PadLeft(4), BasePrice.ToString().PadLeft(4), Type.PadLeft(4));
+            Console.Write("{0}{1}{2}{3}\n", "Name".PadRight(n), "BasePrice".PadRight(n), "Type".ToString().PadRight(n), "Ingredients");
         }
-        public void PrintKeys()
+        /// <summary>
+        /// Print out values with $n for padding distance
+        /// </summary>
+        /// <param name="n"></param>
+        public void Print(int n = 16)
         {
-            Console.Write("{0} {1}  {2} {3} \n", "ID" , "Name" ,"BasePrice" , "Type");
+            string ingredients = "";
+            Ingredients.ForEach(a => ingredients += a.Name + ", ");
+            ingredients = new Regex(", $").Replace(ingredients, "");
+            Console.Write("{0}{1}{2}{3}\n", Name.PadRight(n), BasePrice.ToString().PadRight(n), Type.PadRight(n), ingredients.PadLeft(n));
         }
     }
 }

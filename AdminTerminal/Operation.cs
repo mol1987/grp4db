@@ -33,6 +33,12 @@ namespace AdminTerminal
             Match command = Constant.GetRegexByKey("command").Match(Input);
             Match resource = Constant.GetRegexByKey("resource").Match(Input);
 
+            // If clear command is run
+            if (Input == "cls")
+            {
+                Console.Clear();
+                return;
+            }
             // If -help flag is found
             if (Constant.GetRegexByKey("helpflag").Match(Input).Success)
             {
@@ -218,7 +224,7 @@ namespace AdminTerminal
             var repo = new MsSqlRepo.ArticlesRepository("Articles");
             articles = (await repo.GetAllAsync()).ToList();
             articles[0].PrintKeys();
-            articles.ForEach(article => article.PrintRow());
+            articles.ForEach(article => article.Print());
         }
         /// <summary>
         /// > Update Article $todo
@@ -268,13 +274,19 @@ namespace AdminTerminal
         /// <param name="p"></param>
         public async void ListEmployee(List<Parameter> p)
         {
+            List<Employees> employees = new List<Employees>();
             var repo = new MsSqlRepo.EmployeesRepository("Employees");
-            var res = (await repo.GetAllAsync());
-            foreach (var item in res)
+            var res = (await repo.GetAllAsync()); // <== todo; some kind of error here. Cant convert .ToList()
+            int c = 0;
+            foreach(var item in res)
             {
-                Console.WriteLine($"{item.ID} {item.Name} {item.LastName} {item.Email} {item.Password}");
+                if(c == 0)
+                {
+                    item.PrintKeys();
+                }
+                item.Print();
+                c += 1;
             }
-
         }
         /// <summary>
         /// > Update Employee
@@ -331,9 +343,15 @@ namespace AdminTerminal
         {
             var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
             var res = (await repo.GetAllAsync());
+            int c = 0;
             foreach (var item in res)
             {
-                Console.WriteLine($"{item.ID} {item.Name} {item.Price}");
+                if (c == 0)
+                {
+                    item.PrintKeys();
+                }
+                item.Print();
+                c += 1;
             }
         }
         /// <summary>
@@ -344,10 +362,33 @@ namespace AdminTerminal
         {
             View.WriteLine("Not yet implemented");
         }
-        //public async void AddOrder(List<Parameter> p) => View.WriteLine("9");
-        //public async void DeleteOrder(List<Parameter> p) => View.WriteLine("10");
-        //public async void ListOrder(List<Parameter> p) => View.WriteLine("11");
-        //public async void EditOrder(List<Parameter> p) => View.WriteLine("12");
+        public async void AddOrder(List<Parameter> p)
+        {
+            View.WriteLine("Not yet implemented");
+        }
+        public async void DeleteOrder(List<Parameter> p)
+        {
+            View.WriteLine("Not yet implemented");
+        }
+        public async void ListOrder(List<Parameter> p)
+        {
+            var repo = new MsSqlRepo.OrdersRepository("Orders");
+            var res = (await repo.GetAllAsync());
+            int c = 0;
+            foreach (var item in res)
+            {
+                if (c == 0)
+                {
+                    item.PrintKeys();
+                }
+                item.Print();
+                c += 1;
+            }
+        }
+        public async void EditOrder(List<Parameter> p)
+        {
+            View.WriteLine("Not yet implemented");
+        }
         /// <summary>
         /// > -help
         /// </summary>
@@ -367,7 +408,7 @@ namespace AdminTerminal
     /// <summary>
     /// Custom Extensions
     /// </summary>
-    public static class Extension
+    public static class Extensions
     {
         /// <summary>
         /// 
