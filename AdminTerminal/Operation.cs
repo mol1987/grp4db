@@ -30,8 +30,8 @@ namespace AdminTerminal
             //List<Match> parameters = new List<Match>();
             List<Match> quotatedParameters = new List<Match>();
             List<Match> flags = new List<Match>();
-            Match command = Constant.GetRegexByKey("command").Match(Input);
-            Match resource = Constant.GetRegexByKey("resource").Match(Input);
+            Match command = new Regex("(?<command>)^[Aa]dd|^[Dd]elete|^[Uu]pdate|^[Ll]ist").Match(Input);
+            Match resource = new Regex("(?<resource>)[Aa]rticles?|[Ee]mployees?|[Ii]ngredients?").Match(Input);
 
             // If clear command is run
             if (Input == "cls")
@@ -40,7 +40,7 @@ namespace AdminTerminal
                 return;
             }
             // If -help flag is found
-            if (Constant.GetRegexByKey("helpflag").Match(Input).Success)
+            if (new Regex("-help|--help|-h").Match(Input).Success)
             {
                 View.WriteLine(Constant.HelpString);
                 return; // Break since we don't want to do anything else
@@ -76,7 +76,7 @@ namespace AdminTerminal
             }
 
             // Clear out flags from string
-            flags = Constant.GetRegexByKey("flags").Matches(Input).ToList();
+            flags = new Regex("(?<flag>-?-\\w+)").Matches(Input).ToList();
             int n = 0;
             for (int i = 0; i < flags.Count; i++)
             {

@@ -25,6 +25,8 @@ namespace AdminTerminal
             Global.IsRunning = true;
             // Load env
             Helper.Environment.LoadEnvFile();
+            // One on start
+            Console.WriteLine("for instructions, type --help");
             while (Global.IsRunning)
             {
                 try
