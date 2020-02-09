@@ -27,14 +27,14 @@ namespace AdminTerminal
             OriginalInput = input; // Kept for future comparisons/checks
 
             Input = Input.TrimStart();
-            List<Match> parameters = new List<Match>();
+            //List<Match> parameters = new List<Match>();
             List<Match> quotatedParameters = new List<Match>();
             List<Match> flags = new List<Match>();
             Match command = Constant.GetRegexByKey("command").Match(Input);
             Match resource = Constant.GetRegexByKey("resource").Match(Input);
 
             // If -help flag is found
-            if (Constant.HasHelpFlag(flags))
+            if (Constant.GetRegexByKey("helpflag").Match(Input).Success)
             {
                 View.WriteLine(Constant.HelpString);
                 return; // Break since we don't want to do anything else
@@ -57,6 +57,12 @@ namespace AdminTerminal
             this.Command = command.Value.FirstCharToUpper();
             this.Resource = resource.Value.FirstCharToUpper();
 
+            // ? 'S' as last char, remove it
+            if (this.Resource.Last() == 's' || this.Resource.Last() == 'S')
+            {
+                this.Resource = this.Resource.Remove(this.Resource.Length - 1);
+            }
+
             // Values inside ""-quotes are to be kept together
             if (Input.Contains('"') || Input.Contains('\'') || Input.Contains('`'))
             {
@@ -76,10 +82,37 @@ namespace AdminTerminal
             Input = Input.Trim();
 
             // Parse the rest into parameters,(regex = any non-whitespace character)
-            parameters = new Regex(@"\S+").Matches(Input).ToList();
+            // Also divided into groups with detection logic
+            // variable         = unnamed
+            // name=variable    = named
+            // " variable "     = literal
+            Regex a = new Regex("(?<literal>\"(.*?)\"+)|(?<named>\\S+=\\S+)|(?<unnamed>\\S+)");
+            MatchCollection mc = a.Matches(input);
+            List<Parameter> parameters = new List<Parameter>();
+            foreach (Match m in mc)
+            {
+                string group = "unknown";
+                if (m.Groups["literal"].Success)
+                {
+                    group = "literal";
+                }
+                else if (m.Groups["named"].Success)
+                {
+                    group = "named";
+                }
+                else if (m.Groups["unnamed"].Success)
+                {
+                    group = "unnamed";
+                }
+                parameters.Add(new Parameter(group, m.Groups[group].Value));
+            }
 
+            // Joined for semantical pathing
             string methodname = this.Command + this.Resource;
+
+            //..
             var endpoint = new EndPoint();
+
             switch (methodname)
             {
                 case "AddArticle":
@@ -145,9 +178,13 @@ namespace AdminTerminal
         /// > $returns $id to screen
         /// </summary>
         /// <param name="p"></param>
-        public async void AddArticle(List<Match> p)
+        public async void AddArticle(List<Parameter> p)
         {
             var article = new Articles();
+            article.Name = p.GetAndShift("name").Value;
+            article.BasePrice = p.GetAndShift("baseprice").Value;
+            article.Type = p.GetAndShift("type").Value;
+            article.Ingredients = p.GetAndShift("ingredients").Value;
             var repo = new MsSqlRepo.ArticlesRepository("Articles");
             int n = (await repo.InsertWithReturnAsync(article));
             View.WriteLine(String.Format($"Added {n} Article"));
@@ -156,13 +193,17 @@ namespace AdminTerminal
         /// > Delete Article $id
         /// </summary>
         /// <param name="p"></param>
-        public async void DeleteArticle(List<Match> p)
+        public async void DeleteArticle(List<Parameter> p)
         {
             int id;
-            if (!Int32.TryParse(p[0].Value, out id))
+            if (!p.GetAndShift("id").isInteger)
             {
-                throw new Exception("Id is invalid");
-            };
+                throw new Exception("No valid id supplied");
+            }
+            else
+            {
+                id = p.GetAndShift("id").Value;
+            }
             var repo = new MsSqlRepo.ArticlesRepository("Articles");
             await repo.DeleteRowAsync(id);
             View.WriteLine(String.Format("Deleted row {0}", id));
@@ -171,7 +212,7 @@ namespace AdminTerminal
         /// > List Articles
         /// </summary>
         /// <param name="p"></param>
-        public async void ListArticle(List<Match> p)
+        public async void ListArticle(List<Parameter> p)
         {
             List<Articles> articles = new List<Articles>();
             var repo = new MsSqlRepo.ArticlesRepository("Articles");
@@ -183,19 +224,21 @@ namespace AdminTerminal
         /// > Update Article $todo
         /// </summary>
         /// <param name="p"></param>
-        public async void UpdateArticle(List<Match> p) => View.WriteLine("4");
-        public async void UpdateIngredients(List<Match> p) => View.WriteLine("8");
+        public async void UpdateArticle(List<Parameter> p)
+        {
+            View.WriteLine("Not yet implemented");
+        }
         /// <summary>
         /// > Add Employee $firstname $lastname $email $password
         /// </summary>
         /// <param name="p"></param>
-        public async void AddEmployee(List<Match> p)
+        public async void AddEmployee(List<Parameter> p)
         {
             Employees newEmployee = new Employees();
-            newEmployee.Name = p[0].Value;
-            newEmployee.LastName = p[1].Value;
-            newEmployee.Email = p[2].Value;
-            newEmployee.Password = p[3].Value;
+            newEmployee.Name = p.GetAndShift("firstname").Value;
+            newEmployee.LastName = p.GetAndShift("lastname").Value;
+            newEmployee.Email = p.GetAndShift("email").Value;
+            newEmployee.Password = p.GetAndShift("password").Value;
             var repo = new MsSqlRepo.EmployeesRepository("Employees");
             int n = (await repo.InsertWithReturnAsync(newEmployee));
             View.WriteLine(String.Format($"Added {n} employee"));
@@ -204,13 +247,17 @@ namespace AdminTerminal
         /// > Delete Employee $id
         /// </summary>
         /// <param name="p"></param>
-        public async void DeleteEmployee(List<Match> p)
+        public async void DeleteEmployee(List<Parameter> p)
         {
             int id;
-            if (!Int32.TryParse(p[0].Value, out id))
+            if (!p.GetAndShift("id").isInteger)
             {
-                throw new Exception("Id is invalid");
-            };
+                throw new Exception("No valid id supplied");
+            }
+            else
+            {
+                id = p.GetAndShift("id").Value;
+            }
             var repo = new MsSqlRepo.EmployeesRepository("Employees");
             await repo.DeleteRowAsync(id);
             View.WriteLine(String.Format($"Deleted row with id={id}"));
@@ -219,7 +266,7 @@ namespace AdminTerminal
         /// List Employees
         /// </summary>
         /// <param name="p"></param>
-        public async void ListEmployee(List<Match> p)
+        public async void ListEmployee(List<Parameter> p)
         {
             var repo = new MsSqlRepo.EmployeesRepository("Employees");
             var res = (await repo.GetAllAsync());
@@ -233,15 +280,26 @@ namespace AdminTerminal
         /// > Update Employee
         /// </summary>
         /// <param name="p"></param>
-        public async void UpdateEmployee(List<Match> p) => View.WriteLine("16");
+        public async void UpdateEmployee(List<Parameter> p)
+        {
+            View.WriteLine("Not yet implemented");
+        }
         /// <summary>
         /// > Add Ingredient $name $price
         /// </summary>
         /// <param name="p"></param>
-        public async void AddIngredients(List<Match> p){
+        public async void AddIngredients(List<Parameter> p)
+        {
             Ingredients ingredients = new Ingredients();
-            ingredients.Name = p[0].Value;
-            ingredients.Price = Int32.Parse(p[1].Value);
+            ingredients.Name = p.GetAndShift("name").Value;
+            if (!p.GetAndShift("price").isReal)
+            {
+                throw new Exception("$price was invalid");
+            }
+            else
+            {
+                ingredients.Price = p.GetAndShift("price").Value;
+            }
             var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
             int id = (await repo.InsertWithReturnAsync(ingredients));
             View.WriteLine(String.Format($"Added {1} Ingredient"));
@@ -250,13 +308,17 @@ namespace AdminTerminal
         /// > Delete Ingredient $id
         /// </summary>
         /// <param name="p"></param>
-        public async void DeleteIngredients(List<Match> p)
+        public async void DeleteIngredients(List<Parameter> p)
         {
             int id;
-            if (!Int32.TryParse(p[0].Value, out id))
+            if (!p.GetAndShift("id").isInteger)
             {
-                throw new Exception("Id is invalid");
-            };
+                throw new Exception("No valid id supplied");
+            }
+            else
+            {
+                id = p.GetAndShift("id").Value;
+            }
             var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
             await repo.DeleteRowAsync(id);
             View.WriteLine(String.Format("Deleted row {0}", id));
@@ -265,7 +327,7 @@ namespace AdminTerminal
         /// > List Ingrededients
         /// </summary>
         /// <param name="p"></param>
-        public async void ListIngredients(List<Match> p)
+        public async void ListIngredients(List<Parameter> p)
         {
             var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
             var res = (await repo.GetAllAsync());
@@ -274,10 +336,18 @@ namespace AdminTerminal
                 Console.WriteLine($"{item.ID} {item.Name} {item.Price}");
             }
         }
-        //public async void AddOrder(List<Match> p) => View.WriteLine("9");
-        //public async void DeleteOrder(List<Match> p) => View.WriteLine("10");
-        //public async void ListOrder(List<Match> p) => View.WriteLine("11");
-        //public async void EditOrder(List<Match> p) => View.WriteLine("12");
+        /// <summary>
+        /// > Update Ingredients
+        /// </summary>
+        /// <param name="p"></param>
+        public async void UpdateIngredients(List<Parameter> p)
+        {
+            View.WriteLine("Not yet implemented");
+        }
+        //public async void AddOrder(List<Parameter> p) => View.WriteLine("9");
+        //public async void DeleteOrder(List<Parameter> p) => View.WriteLine("10");
+        //public async void ListOrder(List<Parameter> p) => View.WriteLine("11");
+        //public async void EditOrder(List<Parameter> p) => View.WriteLine("12");
         /// <summary>
         /// > -help
         /// </summary>
@@ -319,6 +389,12 @@ namespace AdminTerminal
             }
             return result;
         }
+        /// <summary>
+        /// Same funcionailty as in javascript. Return copy and then removes first element of List
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public static dynamic Shift<T>(this List<T> list)
         {
             if (list.Count < 1)
@@ -350,6 +426,41 @@ namespace AdminTerminal
         {
             list = list.Where(el => el.Trim().Length > 0).ToList();
         }
+        /// <summary>
+        /// For use with object 'Parameter'
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static Parameter GetAndShift(this List<Parameter> list, string key)
+        {
+            bool foundIt = false;
+            int i = 0;
+            foreach (Parameter p in list)
+            {
+                if (p.Key == key)
+                {
+                    foundIt = true;
+                    break;
+                }
+                i += 0;
+            }
+            if (foundIt)
+            {
+                var outvar = list[i];
+                list.RemoveAt(i);
+                return outvar;
+            }
+            else
+            {
+                return list.Shift();
+            }
+        }
+        /// <summary>
+        /// First char of string into capital letter
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public static string FirstCharToUpper(this string input) =>
             input switch
             {
