@@ -16,10 +16,6 @@ namespace MsSqlRepo
         {
             _tableName = tableName;
         }
-
-
-
-        
         new public async Task<IEnumerable<Articles>> GetAllAsync()
         {
             using (var connection = base.CreateConnection())
@@ -32,7 +28,6 @@ namespace MsSqlRepo
                 return articles;
             }
         }
-
 
         new public async Task<IEnumerable<Articles>> GetAllAsync(Orders order)
         {

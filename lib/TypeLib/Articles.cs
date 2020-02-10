@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TypeLib
 {
-    public class Articles
+    public class Articles : ICloneable
     {
         public int? ID { get; set; }
         public string? Name { get; set; }
@@ -15,6 +15,7 @@ namespace TypeLib
 
         public List<Ingredients> Ingredients { get; set; }
 
+        
       
         /// <summary>
         /// Prints out neatly for list
@@ -29,6 +30,11 @@ namespace TypeLib
         public void PrintKeys()
         {
             Console.Write("{0} {1}  {2} {3} \n", "ID" , "Name" ,"BasePrice" , "Type");
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

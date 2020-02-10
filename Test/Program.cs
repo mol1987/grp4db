@@ -109,12 +109,8 @@ namespace Test
                 foreach (var item2 in item.Ingredients)
                 {
                     Console.Write(item2.Name.Trim() + ", ");
-                    
-
                 }
-               
             }
-            
         }
 
         static async Task TestRepo()
