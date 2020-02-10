@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using TypeLib;
 
 namespace MenuTestSystem.Menu
 {
-    public class ConfirmOrderPage : IMenu
+    public class ShowOrder : IMenu
     {
         public List<IMenu> PagesList { get; set; }
-        public string Name { set; get; }
-
-        public ConfirmOrderPage()
+        public string Name { get; set; }
+        public ShowOrder()
         {
-            Name = "ConfirmOrder";    
+            Name = "ShowOrder";
         }
         public async Task Print()
         {
@@ -21,10 +19,16 @@ namespace MenuTestSystem.Menu
             PagesList = new List<IMenu>();
             PagesList.Add(Globals.finalizeOrder);
             PagesList.Add(Globals.mainMenu);
-            Globals.basketArticles.Add((Articles)Globals.WorkingArticle.Clone());
             int no = 1;
-            Console.WriteLine("Din beställning är tillagd");
-            Console.WriteLine("-------------\n\n");
+            Console.WriteLine("Din beställning:");
+            Console.WriteLine("-------------");
+            foreach (var item in Globals.basketArticles)
+            {
+                Console.WriteLine(item.Name);
+                Globals.WorkingArticle.Ingredients.ForEach(x => Console.Write(x.Name + " "));
+                Console.WriteLine();
+            }
+            Console.WriteLine("-------------");
             PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
 
             int choice;
@@ -35,3 +39,4 @@ namespace MenuTestSystem.Menu
         }
     }
 }
+

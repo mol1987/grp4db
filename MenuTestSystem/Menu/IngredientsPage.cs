@@ -25,9 +25,8 @@ namespace MenuTestSystem.Menu
             PagesList = new List<IMenu>();
             PagesList.Add(Globals.showArticle);
             bool running = true;
-            while (running)
-            {
-                int no = 0;
+           
+                int no = 1;
                 foreach (var item in Globals.WorkingArticle.Ingredients)
                 {
                     Console.Write(item.Name + " ");
@@ -39,16 +38,13 @@ namespace MenuTestSystem.Menu
                     Console.WriteLine(no++ + " " + item.Name);
                 }
 
-                int choice = 0;
                 PagesList.ForEach(x => Console.WriteLine(no++ + " " + x.Name));
-                Console.WriteLine("0. Quit");
                 int ingredientChoice;
                 int.TryParse(Console.ReadLine(), out ingredientChoice);
                 Globals.WorkingArticle.Ingredients.Add(allIngredients[ingredientChoice - 1]);
                 changeIngredient(Globals.WorkingArticle.Ingredients);
-                if (choice <= 0) await PagesList[0].Print();
-                
-            }
+                await PagesList[0].Print();
+           
         }
 
         Articles ChooseArticle(List<Articles> articles)

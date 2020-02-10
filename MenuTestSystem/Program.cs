@@ -22,8 +22,6 @@ namespace MenuTestSystem
             await menus.Print();
         }
 
-        
-
         static Articles ChooseArticle(List<Articles> articles)
         {
             int choice;

@@ -16,18 +16,22 @@ namespace MenuTestSystem.Menu
         public List<IMenu> PagesList { get; set; }
         public MainMenu()
         {
-            PagesList = new List<IMenu>();
-            PagesList.Add(Globals.pizzaMenu);
+            Name = "MainMenu";   
         }
         public async Task Print()
         {
+            PagesList = new List<IMenu>();
+            PagesList.Add(Globals.pizzaMenu);
+            PagesList.Add(Globals.showOrder);
+            PagesList.Add(Globals.exitMenu);
             Console.Clear();
             Console.WriteLine("Choose a category!");
-            PagesList.ForEach(x => Console.WriteLine(no++ + " " + x.Name));
-            Console.WriteLine("0. Quit");
-            int.TryParse(Console.ReadLine(), out choice);
-            if (choice <= 0) return;
-            await PagesList[choice-1].Print();
+            PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
+            do
+            {
+                int.TryParse(Console.ReadLine(), out choice);
+            } while (choice <= 0 || choice > PagesList.Count);
+            await PagesList[choice - 1].Print();
         }
     }
 }
