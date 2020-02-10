@@ -93,7 +93,7 @@ namespace AdminTerminal
             // name=variable    = named
             // " variable "     = literal
             Regex a = new Regex("(?<literal>\"(.*?)\"+)|(?<named>\\S+=\\S+)|(?<unnamed>\\S+)");
-            MatchCollection mc = a.Matches(input);
+            MatchCollection mc = a.Matches(Input);
             List<Parameter> parameters = new List<Parameter>();
             foreach (Match m in mc)
             {
@@ -187,15 +187,23 @@ namespace AdminTerminal
         public async void AddArticle(List<Parameter> p)
         {
             var article = new Articles();
+            var newingredients = new Ingredients();
+            newingredients.ID = 1;
+            newingredients.Name = "[fix me pls]";
+            newingredients.Price = 0.0f;
             article.Name = p.GetAndShift("name").Value;
-            if(!p.GetAndShift("baseprice").isReal)
+            if (p.ParameterHasKey("baseprice"))
             {
-                throw new Exception("Price is not float");
+                if (!p.Find(a => a.Key == "baseprice").isReal)
+                {
+                    throw new Exception("Price is invalid format");
+                }
             }
             article.BasePrice = p.GetAndShift("baseprice").Value;
             article.Type = p.GetAndShift("type").Value;
-            article.Ingredients = p.GetAndShift("ingredients").Value;
-            var repo = new MsSqlRepo.ArticlesRepository("Articles");
+            //article.Ingredients.Add(newingredients); 
+             //article.Ingredients.Add(newingredients);
+             var repo = new MsSqlRepo.ArticlesRepository("Articles");
             int n = (await repo.InsertWithReturnAsync(article));
             View.WriteLine(String.Format($"Added {n} Article"));
         }
@@ -206,14 +214,7 @@ namespace AdminTerminal
         public async void DeleteArticle(List<Parameter> p)
         {
             int id;
-            if (!p.GetAndShift("id").isInteger)
-            {
-                throw new Exception("No valid id supplied");
-            }
-            else
-            {
-                id = p.GetAndShift("id").Value;
-            }
+            id = p.GetAndShift("id").Value;
             var repo = new MsSqlRepo.ArticlesRepository("Articles");
             await repo.DeleteRowAsync(id);
             View.WriteLine(String.Format("Deleted row {0}", id));
@@ -231,12 +232,43 @@ namespace AdminTerminal
             articles.ForEach(article => article.Print());
         }
         /// <summary>
-        /// > Update Article $todo
+        /// > Update Article $ID [$key=$value..]
         /// </summary>
         /// <param name="p"></param>
         public async void UpdateArticle(List<Parameter> p)
         {
-            View.WriteLine("Not yet implemented");
+            int id;
+            Articles updatedArticle = new Articles();
+            var repo = new MsSqlRepo.ArticlesRepository("Articles");
+            if (!p.GetAndShift("id").isInteger)
+            {
+                throw new Exception("Id needs to be integer format");
+            }
+            id = p.GetAndShift("id").Value;
+            updatedArticle = (await repo.GetAsync(id));
+
+            foreach (Parameter item in p)
+            {
+                if (item.Key == "name")
+                {
+                    updatedArticle.Name = p.GetAndShift("name").Value;
+                }
+                if (item.Key == "type")
+                {
+                    updatedArticle.Name = p.GetAndShift("type").Value;
+                }
+                if (item.Key == "price")
+                {
+                    if (!p.GetAndShift("price").isReal)
+                    {
+                        throw new Exception("Price is wrong format, need to be float");
+                    }
+                    updatedArticle.Name = p.GetAndShift("price").Value;
+                }
+            }
+            await repo.UpdateAsync(updatedArticle);
+
+            //View.WriteLine("Not yet implemented");
         }
         /// <summary>
         /// > Add Employee $firstname $lastname $email $password
@@ -260,14 +292,11 @@ namespace AdminTerminal
         public async void DeleteEmployee(List<Parameter> p)
         {
             int id;
-            if (!p.GetAndShift("id").isInteger)
+            if (!p[0].isInteger)
             {
-                throw new Exception("No valid id supplied");
+                throw new Exception("Wrong type");
             }
-            else
-            {
-                id = p.GetAndShift("id").Value;
-            }
+            id = p.GetAndShift("id").Value;
             var repo = new MsSqlRepo.EmployeesRepository("Employees");
             await repo.DeleteRowAsync(id);
             View.WriteLine(String.Format($"Deleted row with id={id}"));
@@ -282,9 +311,9 @@ namespace AdminTerminal
             var repo = new MsSqlRepo.EmployeesRepository("Employees");
             var res = (await repo.GetAllAsync()); // <== todo; some kind of error here. Cant convert .ToList()
             int c = 0;
-            foreach(var item in res)
+            foreach (var item in res)
             {
-                if(c == 0)
+                if (c == 0)
                 {
                     item.PrintKeys();
                 }
@@ -308,14 +337,15 @@ namespace AdminTerminal
         {
             Ingredients ingredients = new Ingredients();
             ingredients.Name = p.GetAndShift("name").Value;
-            if (!p.GetAndShift("price").isReal)
-            {
-                throw new Exception("$price was invalid");
-            }
-            else
-            {
-                ingredients.Price = p.GetAndShift("price").Value;
-            }
+            ingredients.Price = p.GetAndShift("price").Value;
+            //if (!p.GetAndShift("price").isReal)
+            //{
+            //    throw new Exception("$price was invalid");
+            //}
+            //else
+            //{
+            //    ingredients.Price = p.GetAndShift("price").Value;
+            //}
             var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
             int id = (await repo.InsertWithReturnAsync(ingredients));
             View.WriteLine(String.Format($"Added {1} Ingredient"));
@@ -326,15 +356,15 @@ namespace AdminTerminal
         /// <param name="p"></param>
         public async void DeleteIngredients(List<Parameter> p)
         {
-            int id;
-            if (!p.GetAndShift("id").isInteger)
-            {
-                throw new Exception("No valid id supplied");
-            }
-            else
-            {
-                id = p.GetAndShift("id").Value;
-            }
+            int id = p.GetAndShift("id").Value;
+            //if (!p.GetAndShift("id").isInteger)
+            //{
+            //    throw new Exception("No valid id supplied");
+            //}
+            //else
+            //{
+            //    id = p.GetAndShift("id").Value;
+            //}
             var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
             await repo.DeleteRowAsync(id);
             View.WriteLine(String.Format("Deleted row {0}", id));
@@ -501,6 +531,57 @@ namespace AdminTerminal
                 return list.Shift();
             }
         }
+        public static Parameter GetAndShift(this List<Parameter> list, string key, dynamic defaultvalue)
+        {
+            bool foundIt = false;
+            int i = 0;
+            foreach (Parameter p in list)
+            {
+                if (p.Key == key)
+                {
+                    foundIt = true;
+                    break;
+                }
+                i += 0;
+            }
+            if (foundIt)
+            {
+                var outvar = list[i];
+                list.RemoveAt(i);
+                return outvar;
+            }
+            else
+            {
+                list.Shift();
+                return defaultvalue;
+            }
+        }
+        public static Boolean ParameterHasKey(this List<Parameter> list, string key)
+        {
+            bool foundIt = false;
+            int i = 0;
+            foreach (Parameter p in list)
+            {
+                if (p.Key == key)
+                {
+                    foundIt = true;
+                    break;
+                }
+                i += 0;
+            }
+            return foundIt;
+        }
+
+        //public static List<Ingredients> IngredientStringToIngredientList(this String str)
+        //{
+        //    List<Ingredients> newIngredients = new List<Ingredients>();
+        //    foreach(var item in str.Split(',').ToList())
+        //    {
+        //        Ingredients ingredients = new Ingredients();
+        //        ingredients.Name = 
+        //    }
+            
+        //}
         /// <summary>
         /// First char of string into capital letter
         /// </summary>

@@ -32,27 +32,33 @@ namespace AdminTerminal
                 Key = "";
                 Value = value;
             }
-            isReal = new Regex("[-+]?([0-9]*\\.[0-9]+|[0-9]+)").Match(Value).Success;
-            isInteger = isReal ? false : new Regex("^\\d+$").Match(Value).Success;
+            int i;
+            float f;
+            if(Int32.TryParse(Value.ToString(), out i))
+            {
+                isInteger = true;
+                Value = i;
+            }
+            else if (float.TryParse(Value.ToString(), out f))
+            {
+                isReal = true;
+                Value = f;
+            }
+            //isInteger = new Regex("^[-+]?([0-9]*\\.[0-9]+|[0-9]+)$").Match(Value).Success;
+            //isInteger = new Regex("^\\d+$").Match(Value).Success;
+            //int intres;
+            //float floatres;
+            //if (isReal)
+            //{
+            //    isInteger = float.TryParse(Value, out floatres);
+            //    Value = floatres;
+            //}
+            //else if (isInteger)
+            //{
+            //    isReal = Int32.TryParse(Value, out intres);
+            //    Value = intres;
+            //}
 
-            if (isReal)
-            {
-                float floatres;
-                bool isFloat = float.TryParse(Value, out floatres);
-                if (!isFloat)
-                {
-                    throw new Exception("Invalid float format");
-                }
-            }
-            if (isInteger)
-            {
-                int intres;
-                bool isInt = Int32.TryParse(Value, out intres);
-                if (!isInt)
-                {
-                    throw new Exception("Invalid integer format, can only be [0-9]+");
-                }
-            }
         }
         public void Print()
         {

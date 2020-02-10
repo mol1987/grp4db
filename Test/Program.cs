@@ -172,7 +172,7 @@ namespace Test
             articles = (await repo.GetAllAsync()).ToList();
             TestTool.PrintSuccess("Got {0} row from Articles\n", articles.Count());
             articles.First().PrintKeys();
-            articles.ForEach(article => article.PrintRow());
+            articles.ForEach(article => article.Print());
 
             //
             var repoEmployees = new EmployeesRepository("Employees");
