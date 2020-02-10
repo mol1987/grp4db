@@ -116,46 +116,50 @@ namespace AdminTerminal
             // Joined for semantical pathing
             string methodname = this.Command + this.Resource;
 
-            //..
-            var endpoint = new EndPoint();
-
+            /******
+            *
+            ******/
+            var newArticle = new Articles();
+            var newEmployee = new Employees();
+            var newIngredients = new Ingredients();
+            
             switch (methodname)
             {
                 case "AddArticle":
-                    endpoint.AddArticle(parameters);
+                    //endpoint.AddArticle(parameters);
                     break;
                 case "DeleteArticle":
-                    endpoint.DeleteArticle(parameters);
+                    //endpoint.DeleteArticle(parameters);
                     break;
                 case "ListArticle":
-                    endpoint.ListArticle(parameters);
+                    //endpoint.ListArticle(parameters);
                     break;
                 case "UpdateArticle":
-                    endpoint.UpdateArticle(parameters);
+                    //endpoint.UpdateArticle(parameters);
                     break;
                 case "AddEmployee":
-                    endpoint.AddEmployee(parameters);
+                    //endpoint.AddEmployee(parameters);
                     break;
                 case "DeleteEmployee":
-                    endpoint.DeleteEmployee(parameters);
+                    //endpoint.DeleteEmployee(parameters);
                     break;
                 case "ListEmployee":
-                    endpoint.ListEmployee(parameters);
+                    //endpoint.ListEmployee(parameters);
                     break;
                 case "UpdateEmployee":
-                    endpoint.UpdateEmployee(parameters);
+                    //endpoint.UpdateEmployee(parameters);
                     break;
                 case "AddIngredient":
-                    endpoint.AddIngredients(parameters);
+                    //endpoint.AddIngredients(parameters);
                     break;
                 case "DeleteIngredient":
-                    endpoint.DeleteIngredients(parameters);
+                    //endpoint.DeleteIngredients(parameters);
                     break;
                 case "ListIngredient":
-                    endpoint.ListIngredients(parameters);
+                    //endpoint.ListIngredients(parameters);
                     break;
                 case "UpdateIngredient":
-                    endpoint.DeleteIngredients(parameters);
+                    //endpoint.DeleteIngredients(parameters);
                     break;
                 default:
                     throw new Exception("Error occured[warning]");
@@ -177,268 +181,265 @@ namespace AdminTerminal
             throw new Exception(str);
         }
     }
-    public class EndPoint
-    {
-        /// <summary>
-        /// > Add Article $name $price $type $ingredients
-        /// > $returns $id to screen
-        /// </summary>
-        /// <param name="p"></param>
-        public async void AddArticle(List<Parameter> p)
-        {
-            var article = new Articles();
-            var newingredients = new Ingredients();
-            newingredients.ID = 1;
-            newingredients.Name = "[fix me pls]";
-            newingredients.Price = 0.0f;
-            article.Name = p.GetAndShift("name").Value;
-            if (p.ParameterHasKey("baseprice"))
-            {
-                if (!p.Find(a => a.Key == "baseprice").isReal)
-                {
-                    throw new Exception("Price is invalid format");
-                }
-            }
-            article.BasePrice = p.GetAndShift("baseprice").Value;
-            article.Type = p.GetAndShift("type").Value;
-            //article.Ingredients.Add(newingredients); 
-             //article.Ingredients.Add(newingredients);
-             var repo = new MsSqlRepo.ArticlesRepository("Articles");
-            int n = (await repo.InsertWithReturnAsync(article));
-            View.WriteLine(String.Format($"Added {n} Article"));
-        }
-        /// <summary>
-        /// > Delete Article $id
-        /// </summary>
-        /// <param name="p"></param>
-        public async void DeleteArticle(List<Parameter> p)
-        {
-            int id;
-            id = p.GetAndShift("id").Value;
-            var repo = new MsSqlRepo.ArticlesRepository("Articles");
-            await repo.DeleteRowAsync(id);
-            View.WriteLine(String.Format("Deleted row {0}", id));
-        }
-        /// <summary>
-        /// > List Articles
-        /// </summary>
-        /// <param name="p"></param>
-        public async void ListArticle(List<Parameter> p)
-        {
-            List<Articles> articles = new List<Articles>();
-            var repo = new MsSqlRepo.ArticlesRepository("Articles");
-            articles = (await repo.GetAllAsync()).ToList();
-            articles[0].PrintKeys();
-            articles.ForEach(article => article.Print());
-        }
-        /// <summary>
-        /// > Update Article $ID [$key=$value..]
-        /// </summary>
-        /// <param name="p"></param>
-        public async void UpdateArticle(List<Parameter> p)
-        {
-            int id;
-            Articles updatedArticle = new Articles();
-            var repo = new MsSqlRepo.ArticlesRepository("Articles");
-            if (!p.GetAndShift("id").isInteger)
-            {
-                throw new Exception("Id needs to be integer format");
-            }
-            id = p.GetAndShift("id").Value;
-            updatedArticle = (await repo.GetAsync(id));
+    //public class EndPoint
+    //{
+    //    /// <summary>
+    //    /// > Add Article $name $price $type [$ingredients]
+    //    /// > $returns $id to screen
+    //    /// </summary>
+    //    /// <param name="p"></param>
+    //    public async void AddArticle(List<Parameter> p)
+    //    {
+    //        var repo = new MsSqlRepo.ArticlesRepository("Articles");
+    //        var newArticle = new Articles();
+            
+    //        newArticle.Name = p.GetAndShift("name").Value;
+    //        newArticle.BasePrice = p.GetAndShift("price").Value;
+    //        newArticle.Type = p.GetAndShift("type").Value;
+    //        int n = (await repo.InsertWithReturnAsync(newArticle));
+    //        View.WriteLine(String.Format($"Added {n} Article"));
 
-            foreach (Parameter item in p)
-            {
-                if (item.Key == "name")
-                {
-                    updatedArticle.Name = p.GetAndShift("name").Value;
-                }
-                if (item.Key == "type")
-                {
-                    updatedArticle.Name = p.GetAndShift("type").Value;
-                }
-                if (item.Key == "price")
-                {
-                    if (!p.GetAndShift("price").isReal)
-                    {
-                        throw new Exception("Price is wrong format, need to be float");
-                    }
-                    updatedArticle.Name = p.GetAndShift("price").Value;
-                }
-            }
-            await repo.UpdateAsync(updatedArticle);
+    //    }
+    //    /// <summary>
+    //    /// > Delete Article $id
+    //    /// </summary>
+    //    /// <param name="p"></param>
+    //    public async void DeleteArticle(List<Parameter> p)
+    //    {
+    //        var repo = new MsSqlRepo.ArticlesRepository("Articles");
+    //        int id;
+    //        if (p.Count < 1 || !p[0].isInteger)
+    //        {
+    //            throw new Exception("Error occured, user fault");
+    //        }
+    //        id = p.GetAndShift("id").Value;
 
-            //View.WriteLine("Not yet implemented");
-        }
-        /// <summary>
-        /// > Add Employee $firstname $lastname $email $password
-        /// </summary>
-        /// <param name="p"></param>
-        public async void AddEmployee(List<Parameter> p)
-        {
-            Employees newEmployee = new Employees();
-            newEmployee.Name = p.GetAndShift("firstname").Value;
-            newEmployee.LastName = p.GetAndShift("lastname").Value;
-            newEmployee.Email = p.GetAndShift("email").Value;
-            newEmployee.Password = p.GetAndShift("password").Value;
-            var repo = new MsSqlRepo.EmployeesRepository("Employees");
-            int n = (await repo.InsertWithReturnAsync(newEmployee));
-            View.WriteLine(String.Format($"Added {n} employee"));
-        }
-        /// <summary>
-        /// > Delete Employee $id
-        /// </summary>
-        /// <param name="p"></param>
-        public async void DeleteEmployee(List<Parameter> p)
-        {
-            int id;
-            if (!p[0].isInteger)
-            {
-                throw new Exception("Wrong type");
-            }
-            id = p.GetAndShift("id").Value;
-            var repo = new MsSqlRepo.EmployeesRepository("Employees");
-            await repo.DeleteRowAsync(id);
-            View.WriteLine(String.Format($"Deleted row with id={id}"));
-        }
-        /// <summary>
-        /// List Employees
-        /// </summary>
-        /// <param name="p"></param>
-        public async void ListEmployee(List<Parameter> p)
-        {
-            List<Employees> employees = new List<Employees>();
-            var repo = new MsSqlRepo.EmployeesRepository("Employees");
-            var res = (await repo.GetAllAsync()); // <== todo; some kind of error here. Cant convert .ToList()
-            int c = 0;
-            foreach (var item in res)
-            {
-                if (c == 0)
-                {
-                    item.PrintKeys();
-                }
-                item.Print();
-                c += 1;
-            }
-        }
-        /// <summary>
-        /// > Update Employee
-        /// </summary>
-        /// <param name="p"></param>
-        public async void UpdateEmployee(List<Parameter> p)
-        {
-            View.WriteLine("Not yet implemented");
-        }
-        /// <summary>
-        /// > Add Ingredient $name $price
-        /// </summary>
-        /// <param name="p"></param>
-        public async void AddIngredients(List<Parameter> p)
-        {
-            Ingredients ingredients = new Ingredients();
-            ingredients.Name = p.GetAndShift("name").Value;
-            ingredients.Price = p.GetAndShift("price").Value;
-            //if (!p.GetAndShift("price").isReal)
-            //{
-            //    throw new Exception("$price was invalid");
-            //}
-            //else
-            //{
-            //    ingredients.Price = p.GetAndShift("price").Value;
-            //}
-            var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
-            int id = (await repo.InsertWithReturnAsync(ingredients));
-            View.WriteLine(String.Format($"Added {1} Ingredient"));
-        }
-        /// <summary>
-        /// > Delete Ingredient $id
-        /// </summary>
-        /// <param name="p"></param>
-        public async void DeleteIngredients(List<Parameter> p)
-        {
-            int id = p.GetAndShift("id").Value;
-            //if (!p.GetAndShift("id").isInteger)
-            //{
-            //    throw new Exception("No valid id supplied");
-            //}
-            //else
-            //{
-            //    id = p.GetAndShift("id").Value;
-            //}
-            var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
-            await repo.DeleteRowAsync(id);
-            View.WriteLine(String.Format("Deleted row {0}", id));
-        }
-        /// <summary>
-        /// > List Ingrededients
-        /// </summary>
-        /// <param name="p"></param>
-        public async void ListIngredients(List<Parameter> p)
-        {
-            var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
-            var res = (await repo.GetAllAsync());
-            int c = 0;
-            foreach (var item in res)
-            {
-                if (c == 0)
-                {
-                    item.PrintKeys();
-                }
-                item.Print();
-                c += 1;
-            }
-        }
-        /// <summary>
-        /// > Update Ingredients
-        /// </summary>
-        /// <param name="p"></param>
-        public async void UpdateIngredients(List<Parameter> p)
-        {
-            View.WriteLine("Not yet implemented");
-        }
-        public async void AddOrder(List<Parameter> p)
-        {
-            View.WriteLine("Not yet implemented");
-        }
-        public async void DeleteOrder(List<Parameter> p)
-        {
-            View.WriteLine("Not yet implemented");
-        }
-        public async void ListOrder(List<Parameter> p)
-        {
-            var repo = new MsSqlRepo.OrdersRepository("Orders");
-            var res = (await repo.GetAllAsync());
-            int c = 0;
-            foreach (var item in res)
-            {
-                if (c == 0)
-                {
-                    item.PrintKeys();
-                }
-                item.Print();
-                c += 1;
-            }
-        }
-        public async void EditOrder(List<Parameter> p)
-        {
-            View.WriteLine("Not yet implemented");
-        }
-        /// <summary>
-        /// > -help
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public string HelpFlag(string str)
-        {
-            Console.WriteLine("Help flag detected, do something here");
-            return "";
-        }
-        public string HelpFlag(string cmd, string res)
-        {
-            Console.WriteLine($"Help flag for {cmd} {res} [..]");
-            return "";
-        }
-    }
+    //        await repo.DeleteRowAsync(id);
+    //        View.WriteLine(String.Format("Deleted row {0}", id));
+    //    }
+    //    /// <summary>
+    //    /// > List Articles
+    //    /// </summary>
+    //    /// <param name="p"></param>
+    //    public async void ListArticle(List<Parameter> p)
+    //    {
+    //        List<Articles> articles = new List<Articles>();
+    //        var repo = new MsSqlRepo.ArticlesRepository("Articles");
+    //        articles = (await repo.GetAllAsync()).ToList();
+    //        articles[0].PrintKeys();
+    //        articles.ForEach(article => article.Print());
+    //    }
+    //    /// <summary>
+    //    /// > Update Article $ID [$key=$value..]
+    //    /// </summary>
+    //    /// <param name="p"></param>
+    //    public async void UpdateArticle(List<Parameter> p)
+    //    {
+    //        int id;
+    //        Articles updatedArticle = new Articles();
+    //        var repo = new MsSqlRepo.ArticlesRepository("Articles");
+    //        if (!p.GetAndShift("id").isInteger)
+    //        {
+    //            throw new Exception("Id needs to be integer format");
+    //        }
+    //        id = p.GetAndShift("id").Value;
+    //        updatedArticle = (await repo.GetAsync(id));
+
+    //        foreach (Parameter item in p)
+    //        {
+    //            if (item.Key == "name")
+    //            {
+    //                updatedArticle.Name = p.GetAndShift("name").Value;
+    //            }
+    //            if (item.Key == "type")
+    //            {
+    //                updatedArticle.Name = p.GetAndShift("type").Value;
+    //            }
+    //            if (item.Key == "price")
+    //            {
+    //                if (!p.GetAndShift("price").isReal)
+    //                {
+    //                    throw new Exception("Price is wrong format, need to be float");
+    //                }
+    //                updatedArticle.Name = p.GetAndShift("price").Value;
+    //            }
+    //        }
+    //        await repo.UpdateAsync(updatedArticle);
+
+    //        //View.WriteLine("Not yet implemented");
+    //    }
+    //    /// <summary>
+    //    /// > Add Employee $firstname $lastname $email $password
+    //    /// </summary>
+    //    /// <param name="p"></param>
+    //    public async void AddEmployee(List<Parameter> p)
+    //    {
+
+    //        var repo = new MsSqlRepo.EmployeesRepository("Employees");
+    //        var newEmployee = new Employees();
+
+    //        newEmployee.Name = p.GetAndShift("firstname").Value;
+    //        newEmployee.LastName = p.GetAndShift("lastname").Value;
+    //        newEmployee.Email = p.GetAndShift("email").Value;
+    //        newEmployee.Password = p.GetAndShift("password").Value;
+    //        int n = (await repo.InsertWithReturnAsync(newEmployee));
+    //        View.WriteLine(String.Format($"Added {n} employee"));
+
+    //    }
+    //    /// <summary>
+    //    /// > Delete Employee $id
+    //    /// </summary>
+    //    /// <param name="p"></param>
+    //    public async void DeleteEmployee(List<Parameter> p)
+    //    {
+    //        int id;
+    //        if (!p[0].isInteger)
+    //        {
+    //            throw new Exception("Wrong type");
+    //        }
+    //        id = p.GetAndShift("id").Value;
+    //        var repo = new MsSqlRepo.EmployeesRepository("Employees");
+    //        await repo.DeleteRowAsync(id);
+    //        View.WriteLine(String.Format($"Deleted row with id={id}"));
+    //    }
+    //    /// <summary>
+    //    /// List Employees
+    //    /// </summary>
+    //    /// <param name="p"></param>
+    //    public async void ListEmployee(List<Parameter> p)
+    //    {
+    //        List<Employees> employees = new List<Employees>();
+    //        var repo = new MsSqlRepo.EmployeesRepository("Employees");
+    //        var res = (await repo.GetAllAsync()); // <== todo; some kind of error here. Cant convert .ToList()
+    //        int c = 0;
+    //        foreach (var item in res)
+    //        {
+    //            if (c == 0)
+    //            {
+    //                item.PrintKeys();
+    //            }
+    //            item.Print();
+    //            c += 1;
+    //        }
+    //    }
+    //    /// <summary>
+    //    /// > Update Employee
+    //    /// </summary>
+    //    /// <param name="p"></param>
+    //    public async void UpdateEmployee(List<Parameter> p)
+    //    {
+    //        View.WriteLine("Not yet implemented");
+    //    }
+    //    /// <summary>
+    //    /// > Add Ingredient $name $price
+    //    /// </summary>
+    //    /// <param name="p"></param>
+    //    public async void AddIngredients(List<Parameter> p)
+    //    {
+    //        Ingredients ingredients = new Ingredients();
+    //        ingredients.Name = p.GetAndShift("name").Value;
+    //        ingredients.Price = p.GetAndShift("price").Value;
+    //        //if (!p.GetAndShift("price").isReal)
+    //        //{
+    //        //    throw new Exception("$price was invalid");
+    //        //}
+    //        //else
+    //        //{
+    //        //    ingredients.Price = p.GetAndShift("price").Value;
+    //        //}
+    //        var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
+    //        int id = (await repo.InsertWithReturnAsync(ingredients));
+    //        View.WriteLine(String.Format($"Added {1} Ingredient"));
+    //    }
+    //    /// <summary>
+    //    /// > Delete Ingredient $id
+    //    /// </summary>
+    //    /// <param name="p"></param>
+    //    public async void DeleteIngredients(List<Parameter> p)
+    //    {
+    //        int id = p.GetAndShift("id").Value;
+    //        //if (!p.GetAndShift("id").isInteger)
+    //        //{
+    //        //    throw new Exception("No valid id supplied");
+    //        //}
+    //        //else
+    //        //{
+    //        //    id = p.GetAndShift("id").Value;
+    //        //}
+    //        var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
+    //        await repo.DeleteRowAsync(id);
+    //        View.WriteLine(String.Format("Deleted row {0}", id));
+    //    }
+    //    /// <summary>
+    //    /// > List Ingrededients
+    //    /// </summary>
+    //    /// <param name="p"></param>
+    //    public async void ListIngredients(List<Parameter> p)
+    //    {
+    //        var repo = new MsSqlRepo.IngredientsRepository("Ingredients");
+    //        var res = (await repo.GetAllAsync());
+    //        int c = 0;
+    //        foreach (var item in res)
+    //        {
+    //            if (c == 0)
+    //            {
+    //                item.PrintKeys();
+    //            }
+    //            item.Print();
+    //            c += 1;
+    //        }
+    //    }
+    //    /// <summary>
+    //    /// > Update Ingredients
+    //    /// </summary>
+    //    /// <param name="p"></param>
+    //    public async void UpdateIngredients(List<Parameter> p)
+    //    {
+    //        View.WriteLine("Not yet implemented");
+    //    }
+    //    public async void AddOrder(List<Parameter> p)
+    //    {
+    //        View.WriteLine("Not yet implemented");
+    //    }
+    //    public async void DeleteOrder(List<Parameter> p)
+    //    {
+    //        View.WriteLine("Not yet implemented");
+    //    }
+    //    public async void ListOrder(List<Parameter> p)
+    //    {
+    //        var repo = new MsSqlRepo.OrdersRepository("Orders");
+    //        var res = (await repo.GetAllAsync());
+    //        int c = 0;
+    //        foreach (var item in res)
+    //        {
+    //            if (c == 0)
+    //            {
+    //                item.PrintKeys();
+    //            }
+    //            item.Print();
+    //            c += 1;
+    //        }
+    //    }
+    //    public async void EditOrder(List<Parameter> p)
+    //    {
+    //        View.WriteLine("Not yet implemented");
+    //    }
+    //    /// <summary>
+    //    /// > -help
+    //    /// </summary>
+    //    /// <param name="str"></param>
+    //    /// <returns></returns>
+    //    public string HelpFlag(string str)
+    //    {
+    //        Console.WriteLine("Help flag detected, do something here");
+    //        return "";
+    //    }
+    //    public string HelpFlag(string cmd, string res)
+    //    {
+    //        Console.WriteLine($"Help flag for {cmd} {res} [..]");
+    //        return "";
+    //    }
+    //}
     /// <summary>
     /// Custom Extensions
     /// </summary>
@@ -580,7 +581,7 @@ namespace AdminTerminal
         //        Ingredients ingredients = new Ingredients();
         //        ingredients.Name = 
         //    }
-            
+
         //}
         /// <summary>
         /// First char of string into capital letter
