@@ -24,6 +24,7 @@ namespace AdminTerminal
         "	> Articles 	[name] [price] [type] [ingredients]",
         "	> Employees	[name] [lastname] [email] [password]",
         "	> Ingredient[name] [price]",
+        "	> Orders    [...]",
         "",
         "Examples:",
         "	> Add Article \"ExampleArticle\" \"99.0\" \"Food\" \"Cheese,Sausage\"",

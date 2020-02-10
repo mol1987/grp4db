@@ -188,6 +188,10 @@ namespace AdminTerminal
         {
             var article = new Articles();
             article.Name = p.GetAndShift("name").Value;
+            if(!p.GetAndShift("baseprice").isReal)
+            {
+                throw new Exception("Price is not float");
+            }
             article.BasePrice = p.GetAndShift("baseprice").Value;
             article.Type = p.GetAndShift("type").Value;
             article.Ingredients = p.GetAndShift("ingredients").Value;
