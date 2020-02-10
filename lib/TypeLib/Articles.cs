@@ -20,7 +20,7 @@ namespace TypeLib
         /// <param name="n"></param>
         public void PrintKeys(int n = 16)
         {
-            Console.Write("{0}{1}{2}{3}\n", "Name".PadRight(n), "BasePrice".PadRight(n), "Type".ToString().PadRight(n), "Ingredients");
+            Console.Write("{0}{1}{2}{3}{4}\n", "ID".PadRight(n), "Name".PadRight(n), "BasePrice".PadRight(n), "Type".ToString().PadRight(n), "Ingredients");
         }
         /// <summary>
         /// Print out values with $n for padding distance
@@ -31,7 +31,7 @@ namespace TypeLib
             string ingredients = "";
             Ingredients.ForEach(a => ingredients += a.Name + ", ");
             ingredients = new Regex(", $").Replace(ingredients, "");
-            Console.Write("{0}{1}{2}{3}\n", Name.PadRight(n), BasePrice.ToString().PadRight(n), Type.PadRight(n), ingredients.PadLeft(n));
+            Console.Write("{0}{1}{2}{3}{4}\n", ID.ToString().PadRight(n), Name.PadRight(n), BasePrice.ToString().PadRight(n), Type.PadRight(n), ingredients.PadLeft(n));
         }
     }
 }

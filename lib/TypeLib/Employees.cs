@@ -17,7 +17,7 @@ namespace TypeLib
         /// <param name="n"></param>
         public void PrintKeys(int n = 16)
         {
-            Console.Write("{0}{1}{2}{3}\n", "Name".PadRight(n), "LastName".PadRight(n), "Email".ToString().PadRight(n), "Password");
+            Console.Write("{0}{1}{2}{3}{4}\n", "ID".PadRight(n), "Name".PadRight(n), "LastName".PadRight(n), "Email".ToString().PadRight(n), "Password");
         }
         /// <summary>
         /// Print out values with $n for padding distance
@@ -25,7 +25,7 @@ namespace TypeLib
         /// <param name="n"></param>
         public void Print(int n = 16)
         {
-            Console.Write("{0}{1}{2}{3}\n", Name.PadRight(n), LastName.ToString().PadRight(n), Email.PadRight(n), Password.PadRight(n));
+            Console.Write("{0}{1}{2}{3}{4}\n", ID.ToString().PadRight(n), Name.PadRight(n), LastName.ToString().PadRight(n), Email.PadRight(n), Password.PadRight(n));
         }
     }
 }
