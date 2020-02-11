@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using MsSqlRepo;
 using System.Threading.Tasks;
 using System.Linq;
-using BeställningsTerminal.Menu;
+using MenuTestSystem.Menu;
 
-namespace BeställningsTerminal
+namespace MenuTestSystem
 {
     class Program
     {

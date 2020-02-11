@@ -17,7 +17,7 @@ namespace MsSqlRepo
         {
             return (await articlesRepo.GetAllAsync(o)).ToList();
         }
-        public static async Task<List<Articles>> getArticles(this List<Articles> a)
+        public static async Task<List<Articles>> getArticles()
         {
             return (await articlesRepo.GetAllAsync()).ToList();
         }
@@ -25,10 +25,14 @@ namespace MsSqlRepo
         {
             return (await articlesRepo.GetAsync(id));
         }
-
         public static async Task insertOrder(this Orders o)
         {
             await ordersRepo.InsertAsync(o);
         }
+        public static async Task<List<Ingredients>> getIngredients()
+        {
+            return (await ingredientsRepo.GetAllAsync()).ToList();
+        }
+
     }
 }
