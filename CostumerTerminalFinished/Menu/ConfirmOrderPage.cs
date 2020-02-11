@@ -22,7 +22,7 @@ namespace BeställningsTerminal.Menu
             PagesList = new List<IMenu>();
             PagesList.Add(Globals.finalizeOrder);
             PagesList.Add(Globals.mainMenu);
-            Globals.basketArticles.Add(Globals.WorkingArticle.Clone());
+            Globals.basketArticles.Add((Articles)Globals.WorkingArticle.Clone());
             int no = 1;
             Console.WriteLine("Din beställning är tillagd");
             Console.WriteLine("-------------\n\n");

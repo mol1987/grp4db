@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace TypeLib
 {
-    public class Articles
+    public class Articles : ICloneable
     {
         public int? ID { get; set; }
         public string? Name { get; set; }
@@ -32,6 +32,11 @@ namespace TypeLib
             Ingredients.ForEach(a => ingredients += a.Name + ", ");
             ingredients = new Regex(", $").Replace(ingredients, "");
             Console.Write("{0}{1}{2}{3}{4}\n", ID.ToString().PadRight(n), Name.PadRight(n), BasePrice.ToString().PadRight(n), Type.PadRight(n), ingredients.PadLeft(n));
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

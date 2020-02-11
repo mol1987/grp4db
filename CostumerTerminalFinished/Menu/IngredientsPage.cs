@@ -37,14 +37,12 @@ namespace BeställningsTerminal.Menu
                 {
                     Console.WriteLine(no++ + " " + item.Name);
                 }
-
                 PagesList.ForEach(x => Console.WriteLine(no++ + " " + x.Name));
                 int ingredientChoice;
                 int.TryParse(Console.ReadLine(), out ingredientChoice);
                 Globals.WorkingArticle.Ingredients.Add(allIngredients[ingredientChoice - 1]);
                 changeIngredient(Globals.WorkingArticle.Ingredients);
                 await PagesList[0].Print();
-           
         }
 
         Articles ChooseArticle(List<Articles> articles)
