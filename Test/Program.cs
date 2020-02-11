@@ -17,10 +17,15 @@ namespace Test
             var a = await TestEnvironment();
             var b = await TestEnvVariables();
             //await TestRepo();
-            await TestRepo2();
+            //await TestRepo2();
             Console.WriteLine("press any key to quit");
             Console.ReadKey();
-            
+
+
+            Articles art = new Articles { Name = "hej", Ingredients = new List<Ingredients>() };
+
+            Articles hej = art.Clone();
+            Console.WriteLine(hej.Name);
         }
         static async Task RunTests()
         {
@@ -91,7 +96,7 @@ namespace Test
         static async Task TestRepo2()
         {
             List<Articles> articles = new List<Articles>();
-            articles = await articles.getArticles();
+            articles = (await General.articlesRepo.GetAllAsync()).ToList();
             TestTool.PrintSuccess("Got {0} row from Articles\n", articles.Count());
 
             Orders order = new Orders { CustomerID = 10};

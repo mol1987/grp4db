@@ -15,13 +15,14 @@ namespace MenuTestSystem.Menu
         {
             Name = "ConfirmOrder";    
         }
+
         public async Task Print()
         {
             Console.Clear();
             PagesList = new List<IMenu>();
             PagesList.Add(Globals.finalizeOrder);
             PagesList.Add(Globals.mainMenu);
-            Globals.basketArticles.Add((Articles)Globals.WorkingArticle.Clone());
+            Globals.basketArticles.Add(Globals.WorkingArticle.Clone());
             int no = 1;
             Console.WriteLine("Din beställning är tillagd");
             Console.WriteLine("-------------\n\n");

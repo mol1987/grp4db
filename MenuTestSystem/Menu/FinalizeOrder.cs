@@ -25,7 +25,7 @@ namespace MenuTestSystem.Menu
             foreach (var item in Globals.basketArticles)
             {
                 Console.WriteLine(item.Name);
-                Globals.WorkingArticle.Ingredients.ForEach(x => Console.Write(x.Name + " "));
+                item.Ingredients.ForEach(x => Console.Write(x.Name + " "));
                 Console.WriteLine();
             }
             Console.WriteLine("-------------");

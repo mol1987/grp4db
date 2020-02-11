@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MenuTestSystem.Menu
+namespace BeställningsTerminal.Menu
 {
-    public class ShowOrder : IMenu
+    public class FinalizeOrder : IMenu
     {
         public List<IMenu> PagesList { get; set; }
         public string Name { get; set; }
-        public ShowOrder()
+        public FinalizeOrder()
         {
-            Name = "ShowOrder";
+            Name = "FinalizeOrder";
         }
         public async Task Print()
         {
             Console.Clear();
             PagesList = new List<IMenu>();
-            PagesList.Add(Globals.finalizeOrder);
+            PagesList.Add(Globals.reciept);
             PagesList.Add(Globals.mainMenu);
             int no = 1;
-            Console.WriteLine("Din beställning:");
-            Console.WriteLine("-------------");
+            Console.WriteLine("Din beställning");
+            Console.WriteLine("-------------\n\n");
             foreach (var item in Globals.basketArticles)
             {
                 Console.WriteLine(item.Name);
@@ -39,4 +39,3 @@ namespace MenuTestSystem.Menu
         }
     }
 }
-

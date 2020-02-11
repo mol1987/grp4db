@@ -6,7 +6,7 @@ using TypeLib;
 using Dapper;
 using System.Threading.Tasks;
 
-namespace MenuTestSystem.Menu
+namespace BeställningsTerminal.Menu
 {
     public class MainMenu : IMenu
     {

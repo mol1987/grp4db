@@ -11,9 +11,13 @@ namespace MenuTestSystem.Menu
     {
         public List<IMenu> PagesList { get; set; }
         public string Name { get; set; }
-
+        public Reciept()
+        {
+            Name = "Receipt";
+        }
         public async Task Print()
         {
+            Name = "Reciept";
             Console.WriteLine("Din order behandlas");
             Orders order = new Orders { CustomerID = 10 };
             order.Articles = Globals.basketArticles;
