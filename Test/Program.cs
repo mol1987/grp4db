@@ -31,6 +31,52 @@ namespace Test
             Console.ReadKey();
             
         }
+        static async Task Test()
+        {
+
+
+            while (true)
+            {
+
+                //Console.Clear();
+                //List<Orders> allOrders = (await General.ordersRepo.GetAllAsync()).ToList();
+
+                //List<Orders> allDoneOrders = allOrders.Where(x => x.Orderstatus == 2).ToList();
+                //allDoneOrders.ForEach(x => Console.WriteLine(x.ID + " " + x.TimeCreated));
+                System.Threading.Thread.Sleep(2000);
+
+                List<Orders> allDoneOrders = new List<Orders>();
+                System.Threading.Thread thread = new System.Threading.Thread(() => ordersAsync(allDoneOrders));
+                thread.Start(allDoneOrders);
+
+                Orders order = new Orders();
+
+                int choice = 3;
+
+                int.TryParse(Console.ReadLine(), out choice);
+                foreach (var item in allDoneOrders)
+                {
+                    if (item.ID == choice)
+                    {
+                        item.Orderstatus = 3;
+                        order = item;
+                        break;
+                    }
+                }
+                await General.ordersRepo.UpdateAsync(order);
+
+            }
+        }
+
+        static async Task ordersAsync(List<Orders> allDoneOrders)
+        {
+            Console.Clear();
+            List<Orders> allOrders = (await General.ordersRepo.GetAllAsync()).ToList();
+
+            allDoneOrders = allOrders.Where(x => x.Orderstatus == 2).ToList();
+            allDoneOrders.ForEach(x => Console.WriteLine(x.ID + " " + x.TimeCreated));
+            System.Threading.Thread.Sleep(2000);
+        }
 
         private static async void IterateConsoleTitleText(int i = 1)
         {
