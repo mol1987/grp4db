@@ -14,7 +14,6 @@ namespace BeställningsTerminal.Menu
         public List<IMenu> PagesList { get; set; }
         public ShowArticle()
         {
-            Console.WriteLine("baaaajs");
             Name = "ShowArticle";
             PagesList = new List<IMenu>();
             PagesList.Add(Globals.ingredientsPage);
@@ -25,11 +24,14 @@ namespace BeställningsTerminal.Menu
         {
             Console.Clear();
             int no = 1;
+            Console.BackgroundColor = ConsoleColor.Blue;
             Console.WriteLine(Globals.WorkingArticle.Name);
+            Console.BackgroundColor = ConsoleColor.Black;
             Globals.WorkingArticle.Ingredients.ForEach(x => Console.Write(x.Name + " "));
             Console.WriteLine("\n");
+            Console.BackgroundColor = ConsoleColor.Blue;
             PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
-
+            Console.BackgroundColor = ConsoleColor.Black;
             int choice;
             int.TryParse(Console.ReadLine(), out choice);
             if (PagesList != null)

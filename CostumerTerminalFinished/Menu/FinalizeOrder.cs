@@ -20,7 +20,9 @@ namespace BeställningsTerminal.Menu
             PagesList.Add(Globals.reciept);
             PagesList.Add(Globals.mainMenu);
             int no = 1;
+            Console.BackgroundColor = ConsoleColor.Blue;
             Console.WriteLine("Din beställning");
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.WriteLine("-------------\n");
             float totalCost = 0;
             foreach (var item in Globals.basketArticles)
@@ -30,11 +32,14 @@ namespace BeställningsTerminal.Menu
                 totalCost += (float)item.BasePrice;
                 Console.WriteLine("\n");
             }
+            Console.BackgroundColor = ConsoleColor.Blue;
             Console.WriteLine("\nTotal Kostnad: " + totalCost + ":-\n");
+            Console.BackgroundColor = ConsoleColor.Black;
 
             Console.WriteLine("-------------");
+            Console.BackgroundColor = ConsoleColor.Blue;
             PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
-
+            Console.BackgroundColor = ConsoleColor.Black;
             int choice;
             int.TryParse(Console.ReadLine(), out choice);
             if (PagesList != null)

@@ -25,21 +25,29 @@ namespace BeställningsTerminal.Menu
             PagesList = new List<IMenu>();
             PagesList.Add(Globals.showArticle);
             int no = 1;
+            Console.BackgroundColor = ConsoleColor.Blue;
             foreach (var item in Globals.WorkingArticle.Ingredients)
             {
                 Console.Write(item.Name + " ");
             }
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.WriteLine();
             List<Ingredients> allIngredients = await General.getIngredients();
             foreach (var item in allIngredients)
             {
                 Console.WriteLine(no++ + " " + item.Name);
             }
+            Console.WriteLine();
+            Console.BackgroundColor = ConsoleColor.Blue;
             PagesList.ForEach(x => Console.WriteLine(no++ + " " + x.Name));
+            Console.BackgroundColor = ConsoleColor.Black;
             int ingredientChoice;
             int.TryParse(Console.ReadLine(), out ingredientChoice);
-            Globals.WorkingArticle.Ingredients.Add(allIngredients[ingredientChoice - 1]);
-            changeIngredient(Globals.WorkingArticle);
+            if (ingredientChoice < no - 2 && ingredientChoice > 0)
+            {
+                Globals.WorkingArticle.Ingredients.Add(allIngredients[ingredientChoice - 1]);
+                changeIngredient(Globals.WorkingArticle);
+            }
             await PagesList[0].Print();
         }
 

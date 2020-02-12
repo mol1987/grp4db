@@ -29,8 +29,10 @@ namespace BeställningsTerminal.Menu
             PagesList.Add(Globals.exitMenu);
             //Globals.pizzaMeny.Name = "ändra meny namn";
             Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Blue;
             Console.WriteLine("Vällkomen till Pizza Palatset\n");
             Console.WriteLine("välj en av alternativen:");
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.WriteLine("----------------\n");
             PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
             Console.WriteLine("\n----------------\n");

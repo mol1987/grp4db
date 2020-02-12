@@ -37,7 +37,9 @@ namespace BeställningsTerminal.Menu
             thr.Interrupt();
             Console.Clear();
             string s = "";
+            Console.BackgroundColor = ConsoleColor.Blue;
             Console.WriteLine("Pizza meny");
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.WriteLine("---------------\n");
             foreach (var pizza in pizzas)
             {
@@ -48,7 +50,9 @@ namespace BeställningsTerminal.Menu
                 Console.WriteLine(ingredientsString);
             }
             Console.WriteLine("\n---------------\n");
+            Console.BackgroundColor = ConsoleColor.Blue;
             PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
+            Console.BackgroundColor = ConsoleColor.Black;
             int choice;
             do
             {

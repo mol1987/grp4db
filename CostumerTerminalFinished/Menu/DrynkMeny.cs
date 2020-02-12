@@ -38,7 +38,9 @@ namespace BeställningsTerminal.Menu
             Thread.Sleep(200);
             thr.Interrupt();
             string s = "";
+            Console.BackgroundColor = ConsoleColor.Blue;
             Console.WriteLine("Dryck meny");
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.WriteLine("---------------\n");
             foreach (var drynk in drynks)
             {
@@ -49,7 +51,9 @@ namespace BeställningsTerminal.Menu
                 Console.WriteLine(ArticlesString);
             }
             Console.WriteLine("\n---------------\n");
+            Console.BackgroundColor = ConsoleColor.Blue;
             PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
+            Console.BackgroundColor = ConsoleColor.Black;
             int choice;
             do
             {

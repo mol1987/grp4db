@@ -15,7 +15,9 @@ namespace BeställningsTerminal.Menu
         }
         public async Task Print()
         {
+            Console.BackgroundColor = ConsoleColor.Blue;
             Console.WriteLine("Hejdå, välkommen åter");
+            Console.BackgroundColor = ConsoleColor.Black;
         }
     }
 }
