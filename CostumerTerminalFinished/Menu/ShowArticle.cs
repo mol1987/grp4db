@@ -14,15 +14,14 @@ namespace BeställningsTerminal.Menu
         public List<IMenu> PagesList { get; set; }
         public ShowArticle()
         {
-            Console.WriteLine("baaaajs");
-            Name = "ShowArticle";
-            PagesList = new List<IMenu>();
-            PagesList.Add(Globals.ingredientsPage);
-            PagesList.Add(Globals.confirmOrderPage);
+            Name = "ShowArticle";           
         }
 
         public async Task Print()
         {
+            PagesList = new List<IMenu>();
+            PagesList.Add(Globals.ingredientsPage);
+            PagesList.Add(Globals.confirmOrderPage);
             Console.Clear();
             int no = 1;
             Console.WriteLine(Globals.WorkingArticle.Name);
