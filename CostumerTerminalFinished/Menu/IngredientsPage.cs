@@ -15,13 +15,13 @@ namespace BeställningsTerminal.Menu
 
         public IngredientsPage()
         {
-            Name = "IngredientsPage";
+            Name = "Ingredienser";
         }
 
         public async Task Print()
         {
             Console.Clear();
-            Name = "IngredientsPage";
+            Name = "Ingredienser";
             PagesList = new List<IMenu>();
             PagesList.Add(Globals.showArticle);
             int no = 1;

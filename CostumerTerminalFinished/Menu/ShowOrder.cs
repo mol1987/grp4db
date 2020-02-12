@@ -11,7 +11,7 @@ namespace BeställningsTerminal.Menu
         public string Name { get; set; }
         public ShowOrder()
         {
-            Name = "ShowOrder";
+            Name = "Visa din beställning";
         }
         public async Task Print()
         {

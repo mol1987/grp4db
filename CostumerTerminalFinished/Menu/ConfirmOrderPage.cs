@@ -13,7 +13,7 @@ namespace BeställningsTerminal.Menu
 
         public ConfirmOrderPage()
         {
-            Name = "ConfirmOrder";    
+            Name = "Bekräfta din beställning";    
         }
 
         public async Task Print()

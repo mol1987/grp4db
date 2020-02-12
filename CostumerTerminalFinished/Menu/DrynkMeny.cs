@@ -1,22 +1,24 @@
-﻿using System;
+﻿using MsSqlRepo;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MsSqlRepo;
 using TypeLib;
 
 namespace BeställningsTerminal.Menu
 {
-    public class PizzaMenu : IMenu
+    public class  DrynkMeny : IMenu
     {
+        private object drynks;
+
         public string Name { get; set; }
         public List<IMenu> PagesList { get; set; }
-        public PizzaMenu()
+        public DrynkMeny()
         {
-            Name = "Pizza Meny";
+            Name = "Drynk Meny";
         }
-        
+
         public async Task Print()
         {
             const int padding = 45;
@@ -26,17 +28,17 @@ namespace BeställningsTerminal.Menu
             Console.Clear();
             int no = 1;
             List<Articles> articles = await General.getArticles();
-            List<Articles> pizzas = articles.Where(i => i.Type == "Pizza").ToList();
+            List<Articles> drynks = articles.Where(i => i.Type == "drynk").ToList();
             string s = "";
-            Console.WriteLine("Pizza meny");
+            Console.WriteLine("Dryck meny");
             Console.WriteLine("---------------\n");
-            foreach (var pizza in pizzas)
+            foreach (var drynk in drynks)
             {
-                string ingredientsString = "" + no++ + ". " + pizza.Name + " (";
-                pizza.Ingredients.ForEach(x => ingredientsString += x.Name + ", ");
-                ingredientsString = ingredientsString.Substring(0, ingredientsString.Length - 2);
-                ingredientsString += ")" + s.PadLeft(padding - ingredientsString.Length) + pizza.BasePrice + ":-";
-                Console.WriteLine(ingredientsString);
+                string ArticlesString = "" + no++ + ". " + drynk.Name + " (";
+                drynk.Ingredients.ForEach(x => ArticlesString += x.Name + ", ");
+                ArticlesString = ArticlesString.Substring(0, ArticlesString.Length - 2);
+                ArticlesString += " " + s.PadLeft(padding - ArticlesString.Length) + drynk.BasePrice + ":-";
+                Console.WriteLine(ArticlesString);
             }
             Console.WriteLine("\n---------------\n");
             PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
@@ -45,9 +47,9 @@ namespace BeställningsTerminal.Menu
             {
                 int.TryParse(Console.ReadLine(), out choice);
             } while (choice < 1 || choice > no);
-            if (choice > 0 && choice < pizzas.Count)
+            if (choice > 0 && choice < drynks.Count)
             {
-                Globals.WorkingArticle = pizzas[choice - 1];
+                Globals.WorkingArticle = drynks[choice - 1];
                 await Globals.showArticle.Print();
             }
             if (PagesList != null)

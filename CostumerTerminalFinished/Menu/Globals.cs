@@ -17,7 +17,10 @@ namespace BeställningsTerminal.Menu
         public static IngredientsPage ingredientsPage = new IngredientsPage();
         public static ShowArticle showArticle = new ShowArticle();
         public static ShowOrder showOrder = new ShowOrder();
-        public static PizzaMenu pizzaMenu = new PizzaMenu();
+        public static PizzaMenu pizzaMeny = new PizzaMenu();
+        public static DrynkMeny DrynkMeny = new DrynkMeny();
+        public static SaladMenu SaladMenu = new SaladMenu();
         public static MainMenu mainMenu = new MainMenu();
+        
     }
 }

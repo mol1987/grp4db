@@ -11,11 +11,11 @@ namespace BeställningsTerminal.Menu
         public string Name { get; set; }
         public ExitMenu()
         {
-            Name = "ExitMenu";
+            Name = "Avsluta";
         }
         public async Task Print()
         {
-            Console.WriteLine("bye bye");
+            Console.WriteLine("Hejdå, välkommen åter");
         }
     }
 }

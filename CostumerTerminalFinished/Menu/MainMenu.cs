@@ -16,17 +16,21 @@ namespace BeställningsTerminal.Menu
         public List<IMenu> PagesList { get; set; }
         public MainMenu()
         {
-            Name = "MainMenu";   
+            Name = "Huvud meny";   
         }
         public async Task Print()
-        {       
+        {
             no = 1;
             PagesList = new List<IMenu>();
-            PagesList.Add(Globals.pizzaMenu);
+            PagesList.Add(Globals.pizzaMeny);
+            PagesList.Add(Globals.DrynkMeny);
+            PagesList.Add(Globals.SaladMenu);
             PagesList.Add(Globals.showOrder);
             PagesList.Add(Globals.exitMenu);
+            //Globals.pizzaMeny.Name = "ändra meny namn";
             Console.Clear();
-            Console.WriteLine("Välj den typ av mat du vill beställa:");
+            Console.WriteLine("Vällkomen till Pizza Palatset\n");
+            Console.WriteLine("välj en av alternativen:");
             Console.WriteLine("----------------\n");
             PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
             Console.WriteLine("\n----------------\n");
