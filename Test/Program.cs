@@ -245,18 +245,20 @@ namespace Test
 
             //await repoIngredients.InsertCustomIngredientsAsync(orders.First(), articles.First(), articles.First().Ingredients);
             Orders order = orders.First() ;
-            List<Articles> tempArticles = articles.GetRange(0, 2);
+            //List<Articles> tempArticles = articles.GetRange(0, 2);
             //await repoOrders.MakeOrderAsync(order, tempArticles);
+
+            //List<Articles> orderListArticles = (await repo.GetAllAsync(order)).ToList();
+            //foreach (var item in orderListArticles)
+            //{
+            //    Console.WriteLine(item.Name + " " + item.Type);
+            //    foreach (var item2 in item.Ingredients)
+            //    {
+            //        Console.Write(item2.Name.Trim() + ", ");
+            //    }
+            //}
             
-            List<Articles> orderListArticles = (await repo.GetAllAsync(order)).ToList();
-            foreach (var item in orderListArticles)
-            {
-                Console.WriteLine(item.Name + " " + item.Type);
-                foreach (var item2 in item.Ingredients)
-                {
-                    Console.Write(item2.Name.Trim() + ", ");
-                }
-            }
+            await General.articlesRepo.InsertAsync(articles[0]);
 
         }
     }
