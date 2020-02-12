@@ -28,15 +28,18 @@ namespace BeställningsTerminal.Menu
             int no = 1;
             Console.WriteLine("Tack för din betalning!");
             Console.WriteLine("-------------");
+            float totalCost = 0;
             foreach (var item in Globals.basketArticles)
             {
-                Console.WriteLine(item.Name);
-                Globals.WorkingArticle.Ingredients.ForEach(x => Console.Write(x.Name + " "));
-                Console.WriteLine();
+                Console.WriteLine("[x] " + item.Name);
+                item.Ingredients.ForEach(x => Console.Write(x.Name + " "));
+                totalCost += (float)item.BasePrice;
+                Console.WriteLine("\n");
             }
-            Console.WriteLine("-------------");
+            Console.WriteLine("\nTotal Kostnad: " + totalCost + ":-\n");
+            Console.WriteLine("-------------\n");
             Console.WriteLine("Your order number is: " + order.ID);
-            System.Threading.Thread.Sleep(5000);
+            System.Threading.Thread.Sleep(10000);
             await PagesList[0].Print();
         }
     }

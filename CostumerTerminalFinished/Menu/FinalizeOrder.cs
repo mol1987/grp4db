@@ -22,13 +22,16 @@ namespace BeställningsTerminal.Menu
             int no = 1;
             Console.WriteLine("Din beställning");
             Console.WriteLine("-------------\n");
+            float totalCost = 0;
             foreach (var item in Globals.basketArticles)
             {
                 Console.WriteLine("[x] " + item.Name);
                 item.Ingredients.ForEach(x => Console.Write(x.Name + " "));
+                totalCost += (float)item.BasePrice;
                 Console.WriteLine("\n");
             }
- 
+            Console.WriteLine("\nTotal Kostnad: " + totalCost + ":-\n");
+
             Console.WriteLine("-------------");
             PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
 
