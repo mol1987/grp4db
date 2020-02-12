@@ -47,6 +47,27 @@ namespace MsSqlRepo
                     }
                 }
             }
-        } 
+        }
+
+        public async Task GetAllAsync(Orders order)
+        {
+            using (var connection = base.CreateConnection())
+            {
+                IEnumerable<ArticleOrders> articleOrders = await connection.QueryAsync<ArticleOrders>($"SELECT * FROM ArticleOrders WHERE OrdersID=@Id", new { Id = order.ID });
+                List<Articles> articles = new List<Articles>();
+
+                string sql = $"select Ingredients.* FROM ARTICLES INNER JOIN ArticleOrders ON Articles.ID = ArticleOrders.ArticlesID inner join ArticleOrdersIngredients on ArticleOrdersIngredients.ArticleOrdersID = ArticleOrders.ID inner join Ingredients on Ingredients.ID = ArticleOrdersIngredients.IngredientsID WHERE ArticleOrders.OrdersID = @OrdersID and ArticleOrders.ID = @ArticleOrdersID";
+
+                Articles article;
+                foreach (ArticleOrders articleOrdersItem in articleOrders)
+                {
+                    article = await connection.QuerySingleOrDefaultAsync<Articles>($"SELECT * FROM {tableName} WHERE Id=@Id", new { Id = articleOrdersItem.ArticlesID });
+                    article.Ingredients = new List<Ingredients>();
+                    article.Ingredients = (await connection.QueryAsync<Ingredients>(sql, new { OrdersID = order.ID, ArticleOrdersID = articleOrdersItem.ID })).ToList();
+                    articles.Add(article);
+                }
+                order.Articles = articles;
+            }
+        }
     }
 }
