@@ -24,25 +24,23 @@ namespace BeställningsTerminal.Menu
             Name = "IngredientsPage";
             PagesList = new List<IMenu>();
             PagesList.Add(Globals.showArticle);
-            bool running = true;
-           
-                int no = 1;
-                foreach (var item in Globals.WorkingArticle.Ingredients)
-                {
-                    Console.Write(item.Name + " ");
-                }
-                Console.WriteLine();
-                List<Ingredients> allIngredients = await General.getIngredients();
-                foreach (var item in allIngredients)
-                {
-                    Console.WriteLine(no++ + " " + item.Name);
-                }
-                PagesList.ForEach(x => Console.WriteLine(no++ + " " + x.Name));
-                int ingredientChoice;
-                int.TryParse(Console.ReadLine(), out ingredientChoice);
-                Globals.WorkingArticle.Ingredients.Add(allIngredients[ingredientChoice - 1]);
-                changeIngredient(Globals.WorkingArticle.Ingredients);
-                await PagesList[0].Print();
+            int no = 1;
+            foreach (var item in Globals.WorkingArticle.Ingredients)
+            {
+                Console.Write(item.Name + " ");
+            }
+            Console.WriteLine();
+            List<Ingredients> allIngredients = await General.getIngredients();
+            foreach (var item in allIngredients)
+            {
+                Console.WriteLine(no++ + " " + item.Name);
+            }
+            PagesList.ForEach(x => Console.WriteLine(no++ + " " + x.Name));
+            int ingredientChoice;
+            int.TryParse(Console.ReadLine(), out ingredientChoice);
+            Globals.WorkingArticle.Ingredients.Add(allIngredients[ingredientChoice - 1]);
+            changeIngredient(Globals.WorkingArticle);
+            await PagesList[0].Print();
         }
 
         Articles ChooseArticle(List<Articles> articles)
@@ -51,18 +49,21 @@ namespace BeställningsTerminal.Menu
             int.TryParse(Console.ReadLine(), out choice);
             return articles[choice];
         }
-        void changeIngredient(List<Ingredients> ingredients)
+        void changeIngredient(Articles a)
         {
             // if there is a duplicate remove all occurence of that ingredients
             // basicly, if theres already an ingredient of the same name count it as a removed ingredient
-            List<Ingredients> originalList = ingredients.GetRange(0, ingredients.Count() - 1);
+            List<Ingredients> originalList = a.Ingredients.GetRange(0, a.Ingredients.Count() - 1);
             if (originalList.Count > 0)
             {
-                Ingredients found = originalList.Find(x => x.Name == ingredients.Last().Name);
+                Ingredients found = originalList.Find(x => x.Name == a.Ingredients.Last().Name);
                 if (found != null)
                 {
-                    //Console.WriteLine(duplicate.Name + " duplicate");
-                    ingredients.RemoveAll(x => x.Name == found.Name);
+                    a.BasePrice -= found.Price;
+                    a.Ingredients.RemoveAll(x => x.Name == found.Name);
+                } else
+                {
+                    a.BasePrice += a.Ingredients.Last().Price;
                 }
             }
         }

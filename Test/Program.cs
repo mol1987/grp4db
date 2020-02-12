@@ -183,7 +183,7 @@ namespace Test
         static async Task TestRepo2()
         {
             List<Articles> articles = new List<Articles>();
-            articles = await articles.getArticles();
+            articles = (await General.articlesRepo.GetAllAsync()).ToList();
             TestTool.PrintSuccess("Got {0} row from Articles\n", articles.Count());
 
             Orders order = new Orders { CustomerID = 10};

@@ -21,13 +21,14 @@ namespace BeställningsTerminal.Menu
             PagesList.Add(Globals.mainMenu);
             int no = 1;
             Console.WriteLine("Din beställning");
-            Console.WriteLine("-------------\n\n");
+            Console.WriteLine("-------------\n");
             foreach (var item in Globals.basketArticles)
             {
-                Console.WriteLine(item.Name);
+                Console.WriteLine("[x] " + item.Name);
                 item.Ingredients.ForEach(x => Console.Write(x.Name + " "));
-                Console.WriteLine();
+                Console.WriteLine("\n");
             }
+ 
             Console.WriteLine("-------------");
             PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
 

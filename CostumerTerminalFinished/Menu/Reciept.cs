@@ -35,7 +35,8 @@ namespace BeställningsTerminal.Menu
                 Console.WriteLine();
             }
             Console.WriteLine("-------------");
-            
+            Console.WriteLine("Your order number is: " + order.ID);
+            System.Threading.Thread.Sleep(5000);
             await PagesList[0].Print();
         }
     }

@@ -19,15 +19,17 @@ namespace BeställningsTerminal.Menu
             Name = "MainMenu";   
         }
         public async Task Print()
-        {
+        {       
             no = 1;
             PagesList = new List<IMenu>();
             PagesList.Add(Globals.pizzaMenu);
             PagesList.Add(Globals.showOrder);
             PagesList.Add(Globals.exitMenu);
             Console.Clear();
-            Console.WriteLine("Choose a category!");
+            Console.WriteLine("Välj den typ av mat du vill beställa:");
+            Console.WriteLine("----------------\n");
             PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
+            Console.WriteLine("\n----------------\n");
             do
             {
                 int.TryParse(Console.ReadLine(), out choice);

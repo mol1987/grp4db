@@ -18,12 +18,13 @@ namespace MsSqlRepo
         }
         /// <summary>
         /// Inserts an order with all the articles and custom ingredients contained in order.
+        /// gets the orderid and stores it in order
         /// </summary>
         /// <param name="order">Created order object</param>
         /// <returns></returns>
         public async Task InsertAsync(Orders order)
         {
-            var orderTemp = new  Orders { CustomerID = order.CustomerID };
+            var orderTemp = new  Orders { CustomerID = order.CustomerID, Price = order.Price };
             string insertQuery = base.GenerateInsertQuery(orderTemp);
             insertQuery += " SELECT CAST(SCOPE_IDENTITY() as int)";
             using (var connection = CreateConnection())
@@ -46,22 +47,6 @@ namespace MsSqlRepo
                     }
                 }
             }
-        }
-        /// <summary>
-        /// Gets a specific article with ingredients
-        /// </summary>
-        /// <param name="id">Identification no.</param>
-        /// <returns>Articles data</returns>
-        new public async Task<Articles> GetAsync(int id)
-        {
-            using (var connection = CreateConnection())
-            {
-                var result = await connection.QuerySingleOrDefaultAsync<Articles>($"SELECT * FROM {tableName} WHERE Id=@Id", new { Id = id });
-                if (result == null)
-                    throw new KeyNotFoundException($"{tableName} with id [{id}] could not be found.");
-                result.Ingredients = (await connection.QueryAsync<Ingredients>("getArticleIngredients", new { articleID = result.ID }, commandType: CommandType.StoredProcedure)).ToList();
-                return result;
-            }
-        }
+        } 
     }
 }

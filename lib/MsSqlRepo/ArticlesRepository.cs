@@ -33,7 +33,6 @@ namespace MsSqlRepo
         {
             using (var connection = base.CreateConnection())
             {
-
                 IEnumerable<ArticleOrders> articleOrders = await connection.QueryAsync<ArticleOrders>($"SELECT * FROM ArticleOrders WHERE OrdersID=@Id", new { Id = order.ID });
                 List<Articles> articles = new List<Articles>();
 

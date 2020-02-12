@@ -14,29 +14,44 @@ namespace BeställningsTerminal.Menu
         public List<IMenu> PagesList { get; set; }
         public PizzaMenu()
         {
-            Console.WriteLine("piiiiiiiizamenu");
             Name = "PizzaMenu";
-            PagesList = new List<IMenu>();
-            Console.WriteLine("Name " + Globals.showArticle.Name);
-            PagesList.Add(Globals.showArticle);
         }
-
+        
         public async Task Print()
         {
+            const int padding = 45;
+            PagesList = new List<IMenu>();
+            PagesList.Add(Globals.mainMenu);
+            PagesList.Add(Globals.exitMenu);
             Console.Clear();
             int no = 1;
             List<Articles> articles = await General.getArticles();
             List<Articles> pizzas = articles.Where(i => i.Type == "Pizza").ToList();
-            pizzas.ForEach(x => Console.WriteLine(no++ + " " + x.Name));
-            
-            Console.WriteLine("0. Go back");
-
+            string s = "";
+            Console.WriteLine("Pizzameny");
+            Console.WriteLine("---------------\n");
+            foreach (var pizza in pizzas)
+            {
+                string ingredientsString = "" + no++ + ". " + pizza.Name + " (";
+                pizza.Ingredients.ForEach(x => ingredientsString += x.Name + ", ");
+                ingredientsString = ingredientsString.Substring(0, ingredientsString.Length - 2);
+                ingredientsString += ")" + s.PadLeft(padding - ingredientsString.Length) + pizza.BasePrice + ":-";
+                Console.WriteLine(ingredientsString);
+            }
+            Console.WriteLine("\n---------------\n");
+            PagesList.ForEach(x => Console.WriteLine(no++ + ". " + x.Name));
             int choice;
-            int.TryParse(Console.ReadLine(), out choice);
-            Globals.WorkingArticle = pizzas[choice - 1];
-            Console.WriteLine("Count " + Name);
+            do
+            {
+                int.TryParse(Console.ReadLine(), out choice);
+            } while (choice < 1 || choice > no);
+            if (choice > 0 && choice < pizzas.Count)
+            {
+                Globals.WorkingArticle = pizzas[choice - 1];
+                await Globals.showArticle.Print();
+            }
             if (PagesList != null)
-                await PagesList[0].Print();
+                await PagesList[choice - (no - PagesList.Count)].Print();
         }
     }
 }
