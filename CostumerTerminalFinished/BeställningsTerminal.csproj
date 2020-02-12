@@ -10,6 +10,7 @@
     <ProjectReference Include="..\lib\Helper\Helper.csproj" />
     <ProjectReference Include="..\lib\MsSqlRepo\MsSqlRepo.csproj" />
     <ProjectReference Include="..\lib\TypeLib\TypeLib.csproj" />
+    <ProjectReference Include="..\Loading\Loading.csproj" />
   </ItemGroup>
 
 </Project>

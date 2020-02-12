@@ -62,6 +62,15 @@ namespace Loading
                 Console.Clear();
                 Console.WriteLine(e.Message);
             }
+            catch (ThreadInterruptedException)
+            {
+                Console.Clear();
+                Console.ForegroundColor = foreground;
+                Console.CursorVisible = true;
+                //Console.SetCursorPosition(origCol, origRow);
+                return;
+
+            }
         }
 
         void PrintLoadingScreen()

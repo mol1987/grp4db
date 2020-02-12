@@ -1,8 +1,10 @@
-﻿using MsSqlRepo;
+﻿using Loading;
+using MsSqlRepo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TypeLib;
 
@@ -26,9 +28,15 @@ namespace BeställningsTerminal.Menu
             PagesList.Add(Globals.mainMenu);
             PagesList.Add(Globals.exitMenu);
             Console.Clear();
+
+            Thread thr = new Thread(new ThreadStart(loading));
+            thr.Start();
             int no = 1;
             List<Articles> articles = await General.getArticles();
             List<Articles> drynks = articles.Where(i => i.Type == "drynk").ToList();
+            thr.Interrupt();
+            Thread.Sleep(200);
+            thr.Interrupt();
             string s = "";
             Console.WriteLine("Dryck meny");
             Console.WriteLine("---------------\n");
@@ -54,6 +62,11 @@ namespace BeställningsTerminal.Menu
             }
             if (PagesList != null)
                 await PagesList[choice - (no - PagesList.Count)].Print();
+        }
+        static void loading()
+        {
+            SpinningText sp = new SpinningText();
+            sp.PrintLoop();
         }
     }
 }

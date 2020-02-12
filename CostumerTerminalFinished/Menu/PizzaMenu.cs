@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Loading;
 using MsSqlRepo;
 using TypeLib;
 
@@ -23,10 +25,17 @@ namespace BeställningsTerminal.Menu
             PagesList = new List<IMenu>();
             PagesList.Add(Globals.mainMenu);
             PagesList.Add(Globals.exitMenu);
+            
             Console.Clear();
+            Thread thr = new Thread(new ThreadStart(loading));
+            thr.Start();
             int no = 1;
             List<Articles> articles = await General.getArticles();
             List<Articles> pizzas = articles.Where(i => i.Type == "Pizza").ToList();
+            thr.Interrupt();
+            Thread.Sleep(200);
+            thr.Interrupt();
+            Console.Clear();
             string s = "";
             Console.WriteLine("Pizza meny");
             Console.WriteLine("---------------\n");
@@ -52,6 +61,11 @@ namespace BeställningsTerminal.Menu
             }
             if (PagesList != null)
                 await PagesList[choice - (no - PagesList.Count)].Print();
+        }
+        static void loading()
+        {
+            SpinningText sp = new SpinningText();
+            sp.PrintLoop();
         }
     }
 }

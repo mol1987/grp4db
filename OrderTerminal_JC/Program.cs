@@ -23,9 +23,13 @@ namespace OrderTerminal_JC
                     Console.Clear();
                     allOrders = (await General.ordersRepo.GetAllAsync()).ToList();
                     allDoneOrders = allOrders.Where(x => x.Orderstatus == 2).ToList();
-                    Console.WriteLine(" foljande orderar finns redo att hämta ut");
-                    allDoneOrders.ForEach(x => Console.WriteLine(x.ID + " " + "\n" + "------"));
-                    Console.WriteLine(" Ange numret för den order som  gästen  hämtat");
+                    Console.BackgroundColor = ConsoleColor.Blue;
+                    Console.WriteLine("Följande order finns redo att hämta ut");
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    allDoneOrders.ForEach(x => Console.WriteLine("  " + x.ID + " " + "\n" + "------"));
+                    Console.BackgroundColor = ConsoleColor.Blue;
+                    Console.WriteLine("Ange numret för den order som gästen hämtat");
+                    Console.BackgroundColor = ConsoleColor.Black;
 
                     System.Threading.Thread.Sleep(5000);
                 }

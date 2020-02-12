@@ -30,11 +30,14 @@ namespace KundensTerminal
                 List<Orders> allDoneOrders = allOrders.Where(x => x.Orderstatus == 2).ToList();
                 List<Orders> allProcessing = allOrders.Where(x => x.Orderstatus == 1).ToList();
                 thr.Interrupt();
+                Thread.Sleep(200);
                 Console.Clear();
                 int cx = 0, cy = 2;
+                Console.BackgroundColor = ConsoleColor.Blue;
                 Console.WriteLine("Pågående ordrar | Klara ordrar");
-                Console.WriteLine("-------------------------------");
-                allProcessing.ForEach(x => WriteAt("" + x.ID, 5, cy++));
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.WriteLine("------------------------------");
+                allProcessing.ForEach(x => WriteAt("" + x.ID, 6, cy++));
                 cy = 2;
                 allProcessing.ForEach(x => WriteAt("|", 16, cy++));
                 cy = 2;
