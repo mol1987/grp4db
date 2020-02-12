@@ -27,7 +27,7 @@ namespace OrderTerminal_JC
                     allDoneOrders.ForEach(x => Console.WriteLine(x.ID + " " + "\n" + "------"));
                     Console.WriteLine(" Ange numret för den order som  gästen  hämtat");
 
-                    System.Threading.Thread.Sleep(2000);
+                    System.Threading.Thread.Sleep(5000);
                 }
             }
 
