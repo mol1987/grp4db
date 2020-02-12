@@ -181,8 +181,48 @@ namespace AdminTerminal
             newArticle.Name = Parameters.GetAndShift("name").Value;
             newArticle.BasePrice = Parameters.GetAndShift("price").Value;
             newArticle.Type = Parameters.GetAndShift("type").Value;
-            int n = (await repo.InsertWithReturnAsync(newArticle));
-            View.WriteLine(String.Format($"Added {n} Article"));
+            newArticle.Ingredients = new List<Ingredients>();
+            //
+            string ingredientstring = "";
+            // ? not makred with '='
+            if (Parameters.Count > 0 && !Parameters.ParameterHasKey("ingredients"))
+            {
+                ingredientstring = Parameters.GetAndShift("ingredients").Value;
+            }
+            if (Parameters.ParameterHasKey("ingredients"))
+            {
+                ingredientstring = Parameters.GetAndShift("ingredients").Value;
+            }
+            // ? marked with ingredients=etc,etc,etc
+            if (ingredientstring.Length > 0)
+            {
+                var ingrrepo = new MsSqlRepo.IngredientsRepository("Ingredients");
+
+                List<Ingredients> ingredients = (await ingrrepo.GetAllAsync()).ToList();
+                // example input `ingredients=ost,skinka,kebab`
+                List<string> ingrs = new List<string>();
+                ingrs = ingredientstring.Split(',').ToList();
+                foreach (var item in ingrs)
+                {
+                    int id;
+                    foreach (Ingredients ingredientcomparison in ingredients)
+                    {
+                        if (Int32.TryParse(item, out id) && ingredientcomparison.ID == id)
+                        {
+                            newArticle.Ingredients.Add(ingredientcomparison);
+                            break;
+                        }
+                        if (ingredientcomparison.Name.ToUpper() == item.ToUpper())
+                        {
+                            newArticle.Ingredients.Add(ingredientcomparison);
+                            break;
+                        }
+                    }
+                }
+            }
+            //
+            await repo.InsertAsync(newArticle);
+            View.WriteLine(String.Format($"Added {1} Article"));
         }
         private async Task DeleteArticle()
         {
