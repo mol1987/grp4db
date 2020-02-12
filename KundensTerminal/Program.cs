@@ -12,6 +12,8 @@ namespace KundensTerminal
     {
         static async Task Main(string[] args)
         {// kund terminal 
+            /// Change the Window titles
+            Console.Title = "Kund";
             bool res = Helper.Environment.LoadEnvFile() ? true : false;
             while (true)
             {

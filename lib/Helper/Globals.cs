@@ -39,4 +39,48 @@ namespace Helper
             items.Add(key, val);
         }
     }
+    /// <summary>
+    /// 
+    /// </summary>
+    public class Animation
+    {
+        private static System.Threading.Timer Timer;
+        public string Basename { get; set; }
+        private string CurrentString = "";
+        public Animation(string title = "")
+        {
+            Basename = title;
+        }
+        public void Startanimation()
+        {
+            Timer = new System.Threading.Timer(Callback, null, 0, 100);
+        }
+        public void Haltanimation()
+        {
+            Timer.Dispose();
+        }
+        public void Clearanimation()
+        {
+            Haltanimation();
+            CurrentString = "";
+            SetTitle();
+        }
+        public void SetTitle()
+        {
+            Console.Title = String.Format("{0}{1}", Basename, CurrentString);
+        }
+        public void SetTitle(string v)
+        {
+            Console.Title = v;
+        }
+        private void Callback(object state)
+        {
+            CurrentString += ".";
+            if (CurrentString.Length > 6)
+            {
+                CurrentString = "";
+            }
+            SetTitle();
+        }
+    }
 }

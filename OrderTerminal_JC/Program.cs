@@ -11,6 +11,8 @@ namespace OrderTerminal_JC
     {
         static async Task Main(string[] args)
         {
+            /// Change the Window titles
+            Console.Title = "Order";
             bool res = Helper.Environment.LoadEnvFile() ? true : false;
 
             while (true)

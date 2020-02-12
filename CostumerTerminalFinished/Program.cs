@@ -14,6 +14,8 @@ namespace BeställningsTerminal
         static List<List<Func<Task<int>>>> routes = new List<List<Func<Task<int>>>>();
         static async Task Main(string[] args)
         {
+            /// Change the Window titles
+            Console.Title = "Beställning";
             var a = await TestEnvironment();
             var b = await TestEnvVariables();
 

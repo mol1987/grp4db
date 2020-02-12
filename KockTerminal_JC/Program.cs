@@ -7,6 +7,8 @@ namespace KockTerminal_JC
     {
         static void Main(string[] args)
         {
+            /// Change the Window titles
+            Console.Title = "Kock";
             List<Food> orders = new List<Food>();
 
             GetOrders(orders);

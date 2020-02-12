@@ -23,6 +23,7 @@ namespace AdminTerminal
         static void Main(string[] args)
         {
             Global.IsRunning = true;
+            Console.Title = "Admin";
             // Load env
             Helper.Environment.LoadEnvFile();
             // One on start

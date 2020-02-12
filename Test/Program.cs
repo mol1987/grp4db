@@ -17,6 +17,8 @@ namespace Test
         private static int MaxSteps = 4;
         static async Task Main(string[] args)
         {
+            /// Change the Window titles
+            Console.Title = "Test";
             SetConsoleTitleText("Progress");
             StartTimer();
             var a = await TestEnvironment();
