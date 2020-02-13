@@ -257,8 +257,8 @@ namespace Test
             //        Console.Write(item2.Name.Trim() + ", ");
             //    }
             //}
-            
-            await General.articlesRepo.InsertAsync(articles[0]);
+            articles[0].ID = 71;
+            await General.articlesRepo.UpdateAsync(articles[0]);
 
         }
     }

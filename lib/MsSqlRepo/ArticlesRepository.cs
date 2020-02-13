@@ -16,26 +16,44 @@ namespace MsSqlRepo
         {
             _tableName = tableName;
         }
-
+        public async Task UpdateAsync(Articles article)
+        {
+            using (var connection = CreateConnection())
+            {
+                using (var transaction = connection.BeginTransaction())
+                {
+                    string sql = $"Delete from ArticleIngredients WHERE ArticleID = {article.ID }";
+                    await connection.ExecuteAsync(sql, transaction: transaction);
+                    
+                    foreach (var ingredient in article.Ingredients)
+                    {
+                        var sqlQuery = $"INSERT INTO ArticleIngredients (ArticleID, IngredientID) VALUES (@ArticleID, @IngredientID)";
+                        await connection.ExecuteAsync(sqlQuery, new { ArticleID = article.ID, IngredientID = ingredient.ID }, transaction: transaction);
+                    }
+                    transaction.Commit();
+                }
+            }
+        }
         public async Task InsertAsync(Articles article)
         {
             using (var connection = CreateConnection())
             {
-               
-                    using (var transaction = connection.BeginTransaction())
+
+                using (var transaction = connection.BeginTransaction())
+                {
+                    string sql = @"INSERT INTO Articles (Name, BasePrice, Type) VALUES (@Name, @BasePrice, @Type) SELECT CAST(SCOPE_IDENTITY() as int)";
+                    var id = (await connection.QueryAsync<int>(sql, new { Name = article.Name, BasePrice = article.BasePrice, Type = article.Type }, transaction: transaction)).Single();
+                    article.ID = id;
+                    foreach (var ingredient in article.Ingredients)
                     {
-                        string sql = @"INSERT INTO Articles (Name, BasePrice, Type) VALUES (@Name, @BasePrice, @Type) SELECT CAST(SCOPE_IDENTITY() as int)";
-                        var id = (await connection.QueryAsync<int>(sql, new { Name = article.Name, BasePrice = article.BasePrice, Type = article.Type }, transaction: transaction)).Single();
-                        article.ID = id;
-                        foreach (var ingredient in article.Ingredients)
-                        {
-                            var sqlQuery = $"INSERT INTO ArticleIngredients (ArticleID, IngredientID) VALUES (@ArticleID, @IngredientID)";
-                            await connection.ExecuteAsync(sqlQuery, new { ArticleID = article.ID, IngredientID = ingredient.ID }, transaction: transaction);
-                        }
-                        transaction.Commit();
+                        var sqlQuery = $"INSERT INTO ArticleIngredients (ArticleID, IngredientID) VALUES (@ArticleID, @IngredientID)";
+                        await connection.ExecuteAsync(sqlQuery, new { ArticleID = article.ID, IngredientID = ingredient.ID }, transaction: transaction);
                     }
+                    transaction.Commit();
                 }
             }
+        }
+    
 
         new public async Task<IEnumerable<Articles>> GetAllAsync()
         {
