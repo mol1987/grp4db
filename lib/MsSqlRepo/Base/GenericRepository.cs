@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using Npgsql;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
+
 
 /// <summary>
 /// A generic repository. Basic CRUD operations.
@@ -38,8 +40,24 @@ namespace MsSqlRepo
             string port = Helper.Globals.Get("port");
 
             string connectionString = $"Data Source={host};Initial Catalog={database};User Id={username};Password={password};";
-            
+            Console.WriteLine(connectionString);
             return new SqlConnection(connectionString);
+        }
+        private NpgsqlConnection SqlConnectionPost()
+        {
+            // Fetching from locally stored secrets
+            string host = Helper.Globals.Get("host");
+            string database = Helper.Globals.Get("db");
+            string username = Helper.Globals.Get("usr");
+            string password = Helper.Globals.Get("pwd");
+            string port = Helper.Globals.Get("port");
+
+            string connectionString = $"Data Source={host};Initial Catalog={database};User Id={username};Password={password};";
+            connectionString = $"User ID={username}; Password={password}; Host={host}; Port={port}; Database={database};Pooling=true; Min Pool Size=0; Max Pool Size=100; Connection Lifetime=0;";
+            connectionString = $"Host={host};Username={username};Password={password};Database={database};sslmode=Require;Trust Server Certificate=true;";
+            //connectionString = $"Host={host};Username={username};Password={password};Database={database};Pooling=true";
+            Console.WriteLine(connectionString);
+            return new NpgsqlConnection(connectionString);
         }
         /// <summary>
         /// Open new connection and return it for use
@@ -47,7 +65,7 @@ namespace MsSqlRepo
         /// <returns></returns>
         protected IDbConnection CreateConnection()
         {
-            var conn = SqlConnection();
+            var conn = SqlConnectionPost();
             conn.Open();
             return conn;
         }
