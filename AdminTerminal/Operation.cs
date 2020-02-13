@@ -243,7 +243,9 @@ namespace AdminTerminal
         {
             var repo = new MsSqlRepo.ArticlesRepository("Articles");
             var articleToUpdate = new Articles();
+            articleToUpdate.Ingredients = new List<Ingredients>();
             articleToUpdate.ID = Parameters.GetAndShift("id").Value;
+            articleToUpdate = (await repo.GetAsync(articleToUpdate.ID ?? new Int32()));
             foreach(var item in Parameters)
             {
                 if (item.Key == "name")
@@ -259,7 +261,45 @@ namespace AdminTerminal
                     articleToUpdate.Type = item.Value;
                 }
             }
-            var articleList = new List<Articles>() { articleToUpdate };
+            //
+            string ingredientstring = "";
+            // ? not makred with '='
+            if (Parameters.Count > 0 && !Parameters.ParameterHasKey("ingredients"))
+            {
+                ingredientstring = Parameters.GetAndShift("ingredients").Value;
+            }
+            if (Parameters.ParameterHasKey("ingredients"))
+            {
+                ingredientstring = Parameters.GetAndShift("ingredients").Value;
+            }
+            // ? marked with ingredients=etc,etc,etc
+            if (ingredientstring.Length > 0)
+            {
+                var ingrrepo = new MsSqlRepo.IngredientsRepository("Ingredients");
+
+                List<Ingredients> ingredients = (await ingrrepo.GetAllAsync()).ToList();
+                // example input `ingredients=ost,skinka,kebab`
+                List<string> ingrs = new List<string>();
+                ingrs = ingredientstring.Split(',').ToList();
+                foreach (var item in ingrs)
+                {
+                    int id;
+                    foreach (Ingredients ingredientcomparison in ingredients)
+                    {
+                        if (Int32.TryParse(item, out id) && ingredientcomparison.ID == id)
+                        {
+                            articleToUpdate.Ingredients.Add(ingredientcomparison);
+                            break;
+                        }
+                        if (ingredientcomparison.Name.ToUpper() == item.ToUpper())
+                        {
+                            articleToUpdate.Ingredients.Add(ingredientcomparison);
+                            break;
+                        }
+                    }
+                }
+            }
+            //var articleList = new List<Articles>() { articleToUpdate };
             await repo.UpdateAsync(articleToUpdate);
             View.WriteLine("1 article was updated");
         }

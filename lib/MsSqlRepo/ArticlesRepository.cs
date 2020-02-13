@@ -17,25 +17,43 @@ namespace MsSqlRepo
             _tableName = tableName;
         }
 
-        public async Task InsertAsync(Articles article)
+        new public async Task InsertAsync(Articles article)
         {
             using (var connection = CreateConnection())
             {
-               
-                    using (var transaction = connection.BeginTransaction())
+
+                using (var transaction = connection.BeginTransaction())
+                {
+                    string sql = @"INSERT INTO Articles (Name, BasePrice, Type) VALUES (@Name, @BasePrice, @Type) SELECT CAST(SCOPE_IDENTITY() as int)";
+                    var id = (await connection.QueryAsync<int>(sql, new { Name = article.Name, BasePrice = article.BasePrice, Type = article.Type }, transaction: transaction)).Single();
+                    article.ID = id;
+                    foreach (var ingredient in article.Ingredients)
                     {
-                        string sql = @"INSERT INTO Articles (Name, BasePrice, Type) VALUES (@Name, @BasePrice, @Type) SELECT CAST(SCOPE_IDENTITY() as int)";
-                        var id = (await connection.QueryAsync<int>(sql, new { Name = article.Name, BasePrice = article.BasePrice, Type = article.Type }, transaction: transaction)).Single();
-                        article.ID = id;
-                        foreach (var ingredient in article.Ingredients)
-                        {
-                            var sqlQuery = $"INSERT INTO ArticleIngredients (ArticleID, IngredientID) VALUES (@ArticleID, @IngredientID)";
-                            await connection.ExecuteAsync(sqlQuery, new { ArticleID = article.ID, IngredientID = ingredient.ID }, transaction: transaction);
-                        }
-                        transaction.Commit();
+                        var sqlQuery = $"INSERT INTO ArticleIngredients (ArticleID, IngredientID) VALUES (@ArticleID, @IngredientID)";
+                        await connection.ExecuteAsync(sqlQuery, new { ArticleID = article.ID, IngredientID = ingredient.ID }, transaction: transaction);
                     }
+                    transaction.Commit();
                 }
             }
+        }
+        //new public async Task UpdateAsync(Articles article)
+        //{
+        //    using (var connection = CreateConnection())
+        //    {
+
+        //        using (var transaction = connection.BeginTransaction())
+        //        {
+        //            string sql = @"UPDATE Articles SET Name = @Name, BasePrice = @BasePrice, Type = @Type WHERE Articles.ID = @ID SELECT CAST(SCOPE_IDENTITY() as int)";
+        //            await connection.QueryAsync<int>(sql, new { Name = article.Name, BasePrice = article.BasePrice, Type = article.Type, ID = article.ID }, transaction: transaction);
+        //            foreach (var ingredient in article.Ingredients)
+        //            {
+        //                var sqlQuery = $"UPDATE ArticleIngredients SET ArticleID=@ArticleID, IngredientID=@IngredientID";
+        //                await connection.ExecuteAsync(sqlQuery, new { ArticleID = article.ID, IngredientID = ingredient.ID }, transaction: transaction);
+        //            }
+        //            transaction.Commit();
+        //        }
+        //    }
+        //}
 
         new public async Task<IEnumerable<Articles>> GetAllAsync()
         {
@@ -72,7 +90,7 @@ namespace MsSqlRepo
 
                 return (IEnumerable<Articles>)articles;
             }
-            
+
         }
 
         new public async Task<Articles> GetAsync(int id)
