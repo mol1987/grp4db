@@ -16,8 +16,25 @@ namespace MsSqlRepo
         {
             _tableName = tableName;
         }
-
-        new public async Task InsertAsync(Articles article)
+        public async Task UpdateAsync(Articles article)
+        {
+            using (var connection = CreateConnection())
+            {
+                using (var transaction = connection.BeginTransaction())
+                {
+                    string sql = $"Delete from ArticleIngredients WHERE ArticleID = {article.ID }";
+                    await connection.ExecuteAsync(sql, transaction: transaction);
+                    
+                    foreach (var ingredient in article.Ingredients)
+                    {
+                        var sqlQuery = $"INSERT INTO ArticleIngredients (ArticleID, IngredientID) VALUES (@ArticleID, @IngredientID)";
+                        await connection.ExecuteAsync(sqlQuery, new { ArticleID = article.ID, IngredientID = ingredient.ID }, transaction: transaction);
+                    }
+                    transaction.Commit();
+                }
+            }
+        }
+        public async Task InsertAsync(Articles article)
         {
             using (var connection = CreateConnection())
             {
@@ -36,24 +53,6 @@ namespace MsSqlRepo
                 }
             }
         }
-        //new public async Task UpdateAsync(Articles article)
-        //{
-        //    using (var connection = CreateConnection())
-        //    {
-
-        //        using (var transaction = connection.BeginTransaction())
-        //        {
-        //            string sql = @"UPDATE Articles SET Name = @Name, BasePrice = @BasePrice, Type = @Type WHERE Articles.ID = @ID SELECT CAST(SCOPE_IDENTITY() as int)";
-        //            await connection.QueryAsync<int>(sql, new { Name = article.Name, BasePrice = article.BasePrice, Type = article.Type, ID = article.ID }, transaction: transaction);
-        //            foreach (var ingredient in article.Ingredients)
-        //            {
-        //                var sqlQuery = $"UPDATE ArticleIngredients SET ArticleID=@ArticleID, IngredientID=@IngredientID";
-        //                await connection.ExecuteAsync(sqlQuery, new { ArticleID = article.ID, IngredientID = ingredient.ID }, transaction: transaction);
-        //            }
-        //            transaction.Commit();
-        //        }
-        //    }
-        //}
 
         new public async Task<IEnumerable<Articles>> GetAllAsync()
         {
