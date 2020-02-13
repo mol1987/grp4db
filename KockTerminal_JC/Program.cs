@@ -77,12 +77,21 @@ namespace KockTerminal_JC
                 }
                 string xx = Objects.Count.ToString();
                 Console.WriteLine("+ " + xx + " more articles");
+                Console.WriteLine("");
                 break;
             }
         }
         private static async void UpdateRows()
         {
             // HERE UPDATE ROWS
+            var repo = new MsSqlRepo.OrdersRepository("Orders");
+            Objects.Where(obj => obj.Orderstatus == 2).ToList().ForEach(async obj =>
+            {
+                Orders res = new Orders();
+                res = await repo.GetAsync(obj.OrdersID);
+                res.Orderstatus = 2;
+                await repo.InsertAsync(res);
+            });
             Objects = SortObjects((await GetOrdersBy(1)));
             RefreshView();
         }
