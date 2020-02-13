@@ -55,7 +55,7 @@ namespace MsSqlRepo
             string connectionString = $"Data Source={host};Initial Catalog={database};User Id={username};Password={password};";
             connectionString = $"User ID={username}; Password={password}; Host={host}; Port={port}; Database={database};Pooling=true; Min Pool Size=0; Max Pool Size=100; Connection Lifetime=0;";
             connectionString = $"Host={host};Username={username};Password={password};Database={database};sslmode=Require;Trust Server Certificate=true;";
-            //connectionString = $"Host={host};Username={username};Password={password};Database={database};Pooling=true";
+            connectionString = $"Host={host};Username={username};Password={password};Database={database};Pooling=true; Port={port}";
             Console.WriteLine(connectionString);
             return new NpgsqlConnection(connectionString);
         }
