@@ -84,13 +84,13 @@ namespace KockTerminal_JC
         private static async void UpdateRows()
         {
             // HERE UPDATE ROWS
-            var repo = new MsSqlRepo.OrdersRepository("Orders");
+
             Objects.Where(obj => obj.Orderstatus == 2).ToList().ForEach(async obj =>
             {
                 Orders res = new Orders();
-                res = await repo.GetAsync(obj.OrdersID);
+                res = await General.ordersRepo.GetAsync(obj.OrdersID);
                 res.Orderstatus = 2;
-                await repo.InsertAsync(res);
+                await General.ordersRepo.UpdateAsync(res);
             });
             Objects = SortObjects((await GetOrdersBy(1)));
             RefreshView();

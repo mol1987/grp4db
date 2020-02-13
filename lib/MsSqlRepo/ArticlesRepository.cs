@@ -78,7 +78,5 @@ namespace MsSqlRepo
                 return result;
             }
         }
-
-
     }
 }
