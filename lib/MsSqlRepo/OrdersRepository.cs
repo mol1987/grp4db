@@ -69,24 +69,23 @@ namespace MsSqlRepo
                 order.Articles = articles;
             }
         }
-        public async Task<IEnumerable<dynamic>> GetAllAsync(int n)
+        public async Task<List<DisplayObject>> GetAllAsync(int n)
         {
             using (var connection = base.CreateConnection())
             {
                 string testquery =
                     String.Join(
-                    Environment.NewLine,
-                    "SELECT DISTINCT Articles.ID AS 'ARTICLEID' Articles.Name, ArticlesID, OrdersID, TimeCreated, Orderstatus, Ingredients.Name FROM ArticleOrders",
+                    " ",
+                    "(SELECT ArticleOrders.ID, Articles.Name, OrdersID, Orderstatus, Ingredients.Name as 'Ingredient' FROM ArticleOrders",
                     "INNER JOIN Orders ON ArticleOrders.OrdersID = Orders.ID",
                     "INNER JOIN Articles ON Articles.ID = ArticleOrders.ArticlesID",
                     "INNER JOIN ArticleOrdersIngredients ON ArticleOrders.ID = ArticleOrdersIngredients.ArticleOrdersID",
                     "INNER JOIN ArticleIngredients ON ArticleOrdersIngredients.IngredientsID = ArticleIngredients.IngredientID",
                     "JOIN Ingredients ON ArticleIngredients.IngredientID = Ingredients.ID",
-                    "WHERE Orders.Orderstatus = '1') ORDER BY TimeCreated");
+                    "WHERE Orders.Orderstatus = $Orderstatus) ORDER BY TimeCreated")
+                    .Replace(System.Environment.NewLine, "").Trim(new char[] { });
 
-                var articleOrders = await connection.QueryAsync<dynamic>(testquery, new {  });
-
-
+                var articleOrders = (await connection.QueryAsync<DisplayObject>(testquery, new { Orderstatus = n })).ToList();
                 return articleOrders;
 
                 //IEnumerable<ArticleOrders> articleOrders = await connection.QueryAsync<ArticleOrders>($"SELECT * FROM ArticleOrders WHERE OrdersID=@Id", new { Id = order.ID });

@@ -9,9 +9,9 @@ namespace KockTerminal_JC
 {
     class Program
     {
-        private static async Task<List<dynamic>> GetOrdersBy(int n)
+        private static async Task<List<DisplayObject>> GetOrdersBy(int n)
         {
-            List<dynamic> orders = (await General.ordersRepo.GetAllAsync(1)).ToList();
+            List<DisplayObject> orders = (await General.ordersRepo.GetAllAsync(1)).ToList();
             //foreach(Orders order in orders)
             //{
             //    order.Articles = new List<Articles>();
@@ -28,7 +28,7 @@ namespace KockTerminal_JC
             int maxRows = Console.LargestWindowHeight;
             int x = 0;
 
-            var orders = (await GetOrdersBy(x));
+            List<DisplayObject> orders = (await GetOrdersBy(x));
 
             while (isRunning)
             {
@@ -38,8 +38,18 @@ namespace KockTerminal_JC
                     string input = Console.ReadLine();
                     Console.WriteLine(input + "xxx");
                 }
-                orders.ForEach(order => order.Print());
+                Console.WriteLine("ID   Name    OrderID     OrderStatus     Ingredient");
+                orders.ForEach(order => {
+                    Console.WriteLine("{0}{1}{2}{3}{4}",
+                        order.ID.ToString().PadLeft(4),
+                        order.Name.PadLeft(14),
+                        order.OrderID.ToString().PadLeft(4),
+                        order.Orderstatus.ToString().PadLeft(4),
+                        order.Ingredient.PadLeft(14)
+                   );
+                });
                 // remove me
+
                 Console.WriteLine("Remove me--");
                 Console.ReadLine();
                 isRunning = false;
