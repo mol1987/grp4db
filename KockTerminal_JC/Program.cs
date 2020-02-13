@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using System.Threading.Tasks;
 using MsSqlRepo;
 using TypeLib;
@@ -9,113 +10,94 @@ namespace KockTerminal_JC
 {
     class Program
     {
-        private static async Task<List<DisplayObject>> GetOrdersBy(int n)
-        {
-            List<DisplayObject> orders = (await General.ordersRepo.GetAllAsync(1)).ToList();
-            //foreach(Orders order in orders)
-            //{
-            //    order.Articles = new List<Articles>();
-            //    var articles = (await General.articlesRepo.GetAllAsync(order)).ToList();
-            //    articles.ForEach(article => order.Articles.Add(article));
-            //}
-            return orders;
-        }
+        private static bool isReady = true;
+        public static int Counter = 16;
+        public static string dots = "";
+        private static Timer aTimer;
+        public static List<DisplayObject> Objects = new List<DisplayObject>();
         static async Task Main(string[] args)
         {
             Console.Title = "Kock";// Changes title
             bool res = Helper.Environment.LoadEnvFile() ? true : false; // Config stuff
             bool isRunning = true;
-            int maxRows = Console.LargestWindowHeight;
-            int x = 0;
-
-            List<DisplayObject> orders = (await GetOrdersBy(x));
-
+            aTimer = new System.Timers.Timer();
+            aTimer.Interval = 1000;
+            aTimer.Elapsed += Increment;
+            aTimer.AutoReset = true;
+            aTimer.Enabled = true;
             while (isRunning)
             {
                 if (Console.KeyAvailable)
                 {
-                    Console.WriteLine("input detected");
+                    int choice;
+                    aTimer.Stop();
+                    string temp = Console.Title;
+                    Console.Title = "STOPPED";
                     string input = Console.ReadLine();
-                    Console.WriteLine(input + "xxx");
+                    aTimer.Start();
+                    if (Int32.TryParse(input, out choice) && Objects.Exists(obj => obj.ID == choice))
+                    {
+                        Objects.Find(obj => obj.ID == choice).Orderstatus = 2;
+                    }
+                    RefreshView();
+                    Console.Title = temp;
                 }
-                Console.WriteLine("ID   Name    OrderID     OrderStatus     Ingredient");
-                orders.ForEach(order => {
-                    Console.WriteLine("{0}{1}{2}{3}{4}",
-                        order.ID.ToString().PadLeft(4),
-                        order.Name.PadLeft(14),
-                        order.OrderID.ToString().PadLeft(4),
-                        order.Orderstatus.ToString().PadLeft(4),
-                        order.Ingredient.PadLeft(14)
-                   );
-                });
-                // remove me
-
-                Console.WriteLine("Remove me--");
-                Console.ReadLine();
-                isRunning = false;
+                if (Counter >= 16)
+                {
+                    UpdateRows();
+                    Counter = 0;
+                }
+                // isRunning = false;
                 System.Threading.Thread.Sleep(20);
             }
-
-
-
-            //Orders order = new Orders();
-            //
-            //while (true)
-            //{
-            //    List<Orders> allOrders = (await General.ordersRepo.GetAllAsync()).ToList();
-            //    List<Articles> articles = new List<Articles>();
-
-            //    List<Orders> beginningOrder = allOrders.Where(x => x.Orderstatus == 0).ToList();
-            //    Console.WriteLine("välje den order som du vill tillaga");
-
-            //    Console.WriteLine(" ");
-            //    foreach (Orders orderItem in beginningOrder)
-            //    {
-            //        orderItem.Articles = (await General.articlesRepo.GetAllAsync(orderItem)).ToList();
-            //        Console.Write(orderItem.ID + " ");
-
-            //        orderItem.Articles.ForEach(x => Console.WriteLine(x.Name));
-
-            //    }
-
-            //    int choice = 62;
-            //    int.TryParse(Console.ReadLine(), out choice);
-
-            //    foreach (var items in beginningOrder)
-            //    {
-            //        if (items.ID == choice)
-            //        {
-            //            Console.WriteLine(" ");
-            //            Console.WriteLine("Den order som du valt inhåller följande ingredienser");
-            //            Console.WriteLine(" ");
-            //            foreach (var item in items.Articles)
-            //            {
-            //                Console.WriteLine(item.Name);
-
-            //                foreach (Ingredients itemIngredients in item.Ingredients)
-            //                {
-            //                    Console.WriteLine(itemIngredients.Name);
-            //                    break;
-            //                }
-            //            }
-            //        }
-            //    }
-            //    Console.WriteLine("--------------");
-            //    Console.WriteLine(" ");
-            //    Console.WriteLine(" välja 1: för stopa in i ugnen " + "\n" + "välja 2: Återgå");
-            //    int selection = Convert.ToInt32(Console.ReadLine());
-            //    if (selection == 1)
-            //    {
-            //        List<Orders> allDoneOrders = allOrders.Where(x => x.Orderstatus == 2).ToList();
-            //        Console.WriteLine(" ");
-            //        Console.WriteLine(" foljande orderar finns redo att hämtas ut");
-
-            //        allDoneOrders.ForEach(x => Console.WriteLine(x.ID + " " + "\n" + "------"));
-            //        Console.WriteLine(" Ange numret för den order som  gästen  hämtat");
-
-            //        break;
-            //    }
-            //}
+        }
+        private static void Increment(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            Counter += 1;
+            if (Counter >= dots.Length) dots += ".";
+            else dots = "";
+            WriteToTitle();
+        }
+        private static void WriteToTitle()
+        {
+            Console.Title = String.Format("Kock[Updates in {0}s]{1}", 16 - Counter, dots);
+        }
+        private static void RefreshView()
+        {
+            int row = 0;
+            Console.SetCursorPosition(0, 0);
+            Objects.First().PrintKeys();
+            foreach (var obj in Objects)
+            {
+                row += 1;
+                if (row <= 20)
+                {
+                    obj.Print();
+                    continue;
+                }
+                string xx = Objects.Count.ToString();
+                Console.WriteLine("+ " + xx + " more articles");
+                break;
+            }
+        }
+        private static async void UpdateRows()
+        {
+            // HERE UPDATE ROWS
+            Objects = SortObjects((await GetOrdersBy(1)));
+            RefreshView();
+        }
+        private static async Task<List<DisplayObject>> GetOrdersBy(int n) => (await General.ordersRepo.GetAllAsync(1)).ToList();
+        private static List<DisplayObject> SortObjects(List<DisplayObject> objects)
+        {
+            List<DisplayObject> filteredObjects = new List<DisplayObject>();
+            foreach (var obj in objects)
+            {
+                if (filteredObjects.Exists(fobj => fobj.ID == obj.ID))
+                    filteredObjects.Find(fobj => fobj.ID == obj.ID).Ingredient += obj.Ingredient;
+                else
+                    filteredObjects.Add(obj);
+            }
+            return filteredObjects;
         }
     }
 }

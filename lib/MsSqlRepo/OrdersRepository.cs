@@ -82,10 +82,20 @@ namespace MsSqlRepo
                     "INNER JOIN ArticleOrdersIngredients ON ArticleOrders.ID = ArticleOrdersIngredients.ArticleOrdersID",
                     "INNER JOIN ArticleIngredients ON ArticleOrdersIngredients.IngredientsID = ArticleIngredients.IngredientID",
                     "JOIN Ingredients ON ArticleIngredients.IngredientID = Ingredients.ID",
-                    "WHERE Orders.Orderstatus = $Orderstatus) ORDER BY TimeCreated")
-                    .Replace(System.Environment.NewLine, "").Trim(new char[] { });
-
-                var articleOrders = (await connection.QueryAsync<DisplayObject>(testquery, new { Orderstatus = n })).ToList();
+                    "WHERE Orders.Orderstatus = '1') ORDER BY TimeCreated");
+                //.Replace(System.Environment.NewLine, "").Trim(new char[] { });
+                string longquery = @"
+                (SELECT DISTINCT
+                ArticleOrders.ID, Articles.Name, OrdersID, Orderstatus, Ingredients.Name as 'Ingredient'
+                FROM ArticleOrders
+                INNER JOIN Orders ON ArticleOrders.OrdersID = Orders.ID
+                INNER JOIN Articles ON Articles.ID = ArticleOrders.ArticlesID
+                INNER JOIN ArticleOrdersIngredients ON ArticleOrders.ID = ArticleOrdersIngredients.ArticleOrdersID
+                INNER JOIN ArticleIngredients ON ArticleOrdersIngredients.IngredientsID = ArticleIngredients.IngredientID
+                JOIN Ingredients ON ArticleIngredients.IngredientID = Ingredients.ID
+                WHERE Orders.Orderstatus = '1'
+                ) ORDER BY ArticleOrders.ID";
+                var articleOrders = (await connection.QueryAsync<DisplayObject>(longquery, new { Orderstatus = n })).ToList();
                 return articleOrders;
 
                 //IEnumerable<ArticleOrders> articleOrders = await connection.QueryAsync<ArticleOrders>($"SELECT * FROM ArticleOrders WHERE OrdersID=@Id", new { Id = order.ID });
