@@ -233,7 +233,6 @@ namespace MsSqlRepo
                 }
             });
 
-            Console.WriteLine("updateQuery: " + updateQuery.ToString());
 
             updateQuery.Remove(updateQuery.Length - 1, 1); //remove last comma
             updateQuery.Append(" WHERE Id=@Id");
