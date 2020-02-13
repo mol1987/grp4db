@@ -29,7 +29,7 @@ namespace KockTerminal_JC
                 Console.WriteLine(" ");
                 foreach (Orders orderItem in beginningOrder)
                 {
-                    orderItem.Articles = (await General.articlesRepo.GetAllAsync(orderItem)).ToList();
+                    await General.ordersRepo.GetAllAsync(orderItem);
                     Console.Write(orderItem.ID + " ");
                     
                     orderItem.Articles.ForEach(x => Console.WriteLine(x.Name));

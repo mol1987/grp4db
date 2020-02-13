@@ -13,10 +13,6 @@ namespace MsSqlRepo
         public static OrdersRepository ordersRepo = new OrdersRepository("Orders");
         public static IngredientsRepository ingredientsRepo = new IngredientsRepository("Ingredients");
         public static EmployeesRepository employeesRepo = new EmployeesRepository("Employees");
-        public static async Task<List<Articles>> getArticlesFromOrder(this List<Articles> a, Orders o)
-        {
-            return (await articlesRepo.GetAllAsync(o)).ToList();
-        }
         public static async Task<List<Articles>> getArticles()
         {
             return (await articlesRepo.GetAllAsync()).ToList();

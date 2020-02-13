@@ -191,21 +191,6 @@ namespace Test
             await order.insertOrder();
 
             List<Articles> orderListArticles = new List<Articles>();
-            orderListArticles = await orderListArticles.getArticlesFromOrder(order);
-            foreach (var item in orderListArticles)
-            {
-               
-                Console.WriteLine("\n" +item.Name + " " + item.Type) ;
-               
-                
-                foreach (var item2 in item.Ingredients)
-                {
-                    Console.Write(item2.Name.Trim() + ", ");
-                    
-
-                }
-               
-            }
             
         }
 
