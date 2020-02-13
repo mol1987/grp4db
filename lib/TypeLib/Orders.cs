@@ -18,7 +18,7 @@ namespace TypeLib
         /// <param name="n"></param>
         public void PrintKeys(int n = 16)
         {
-            Console.Write("{0}{1}{2}{3}\n", "ID".PadRight(n), "TimeCreated".PadRight(n), "Orderstatus".PadRight(n), "Price".PadRight(n), "CustomerID".PadRight(n), "Articles.Count()".PadRight(n));
+            Console.Write("{0}{1}{2}{3}\n", "ID".PadRight(4), "TimeCreated".PadRight(n), "Orderstatus".PadRight(n), "Price".PadRight(n), "CustomerID".PadRight(n), "Articles.Count()".PadRight(n));
         }
         /// <summary>
         /// Print out values with $n for padding distance
@@ -33,7 +33,7 @@ namespace TypeLib
                 d = TimeCreated.Value;
             }
             string timestamp = d.ToString("yyyy-MM-dd HH:mm:ss");
-            Console.Write("{0}{1}{2}{3}\n", ID.ToString().PadRight(n), timestamp.PadRight(n), Orderstatus.ToString().PadRight(n), Price.ToString().PadRight(n), CustomerID.ToString().PadRight(n),Articles.Count.ToString().PadRight(n));
+            Console.Write("{0}{1}{2}{3}\n", ID.ToString().PadRight(4), timestamp.ToString().PadRight(n), Orderstatus.ToString().PadRight(n), Price.ToString().PadRight(n), CustomerID.ToString().PadRight(n),Articles.Count.ToString().PadRight(n));
         }
     }
 }
