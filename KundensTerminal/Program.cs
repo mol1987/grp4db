@@ -34,14 +34,16 @@ namespace KundensTerminal
                 Console.Clear();
                 int cx = 0, cy = 2;
                 Console.BackgroundColor = ConsoleColor.Blue;
-                Console.WriteLine("Pågående ordrar | Klara ordrar");
+
+                WriteAt("Pågående ordrar | Klara ordrar", 0, 0);
                 Console.BackgroundColor = ConsoleColor.Black;
-                Console.WriteLine("------------------------------");
+                WriteAt("------------------------------", 0, 1);
                 allProcessing.ForEach(x => WriteAt("" + x.ID, 6, cy++));
                 cy = 2;
                 allProcessing.ForEach(x => WriteAt("|", 16, cy++));
                 cy = 2;
                 allDoneOrders.ForEach(x => WriteAt("" + x.ID, 23, cy++));
+                Console.SetCursorPosition(origCol, origRow);
                 System.Threading.Thread.Sleep(2000);
             }
         }
