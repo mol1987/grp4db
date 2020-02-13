@@ -60,7 +60,7 @@ namespace KockTerminal_JC
                 }
                 Console.WriteLine("--------------");
                 Console.WriteLine(" ");
-                Console.WriteLine(" välja 1: för stopa in i ugnen " + "\n" + "välja 2: Återgå");
+                Console.WriteLine("välja 1: för stopa in i ugnen " + "\n" + "välja 2: Återgå");
                 int selection = Convert.ToInt32(Console.ReadLine());
                 if (selection == 1)
                 {
