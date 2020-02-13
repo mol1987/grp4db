@@ -24,7 +24,7 @@ namespace MsSqlRepo
         /// <returns></returns>
         public async Task InsertAsync(Orders order)
         {
-            var orderTemp = new  Orders { CustomerID = order.CustomerID, Price = order.Price };
+            var orderTemp = new Orders { CustomerID = order.CustomerID, Price = order.Price };
             string insertQuery = base.GenerateInsertQuery(orderTemp);
             insertQuery += " SELECT CAST(SCOPE_IDENTITY() as int)";
             using (var connection = CreateConnection())
@@ -67,6 +67,42 @@ namespace MsSqlRepo
                     articles.Add(article);
                 }
                 order.Articles = articles;
+            }
+        }
+        public async Task<IEnumerable<dynamic>> GetAllAsync(int n)
+        {
+            using (var connection = base.CreateConnection())
+            {
+                string testquery =
+                    String.Join(
+                    Environment.NewLine,
+                    "SELECT DISTINCT Articles.ID AS 'ARTICLEID' Articles.Name, ArticlesID, OrdersID, TimeCreated, Orderstatus, Ingredients.Name FROM ArticleOrders",
+                    "INNER JOIN Orders ON ArticleOrders.OrdersID = Orders.ID",
+                    "INNER JOIN Articles ON Articles.ID = ArticleOrders.ArticlesID",
+                    "INNER JOIN ArticleOrdersIngredients ON ArticleOrders.ID = ArticleOrdersIngredients.ArticleOrdersID",
+                    "INNER JOIN ArticleIngredients ON ArticleOrdersIngredients.IngredientsID = ArticleIngredients.IngredientID",
+                    "JOIN Ingredients ON ArticleIngredients.IngredientID = Ingredients.ID",
+                    "WHERE Orders.Orderstatus = '1') ORDER BY TimeCreated");
+
+                var articleOrders = await connection.QueryAsync<dynamic>(testquery, new {  });
+
+
+                return articleOrders;
+
+                //IEnumerable<ArticleOrders> articleOrders = await connection.QueryAsync<ArticleOrders>($"SELECT * FROM ArticleOrders WHERE OrdersID=@Id", new { Id = order.ID });
+                //List<Articles> articles = new List<Articles>();
+
+                //string sql = $"select Ingredients.* FROM ARTICLES INNER JOIN ArticleOrders ON Articles.ID = ArticleOrders.ArticlesID inner join ArticleOrdersIngredients on ArticleOrdersIngredients.ArticleOrdersID = ArticleOrders.ID inner join Ingredients on Ingredients.ID = ArticleOrdersIngredients.IngredientsID WHERE ArticleOrders.OrdersID = @OrdersID and ArticleOrders.ID = @ArticleOrdersID";
+
+                //Articles article;
+                //foreach (ArticleOrders articleOrdersItem in articleOrders)
+                //{
+                //    article = await connection.QuerySingleOrDefaultAsync<Articles>($"SELECT * FROM {tableName} WHERE Id=@Id LIMIT BY $limit", new { Id = articleOrdersItem.ArticlesID, limit = limit });
+                //    article.Ingredients = new List<Ingredients>();
+                //    article.Ingredients = (await connection.QueryAsync<Ingredients>(sql, new { OrdersID = order.ID, ArticleOrdersID = articleOrdersItem.ID })).ToList();
+                //    articles.Add(article);
+                //}
+                //order.Articles = articles;
             }
         }
     }
