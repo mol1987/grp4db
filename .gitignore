@@ -331,3 +331,4 @@ ASALocalRun/
 
 .env
 / - kopia.env
+/.env postgre

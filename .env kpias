@@ -1,6 +1,0 @@
-host=weboholics-demo.dyndns-ip.com
-db=grupp4
-usr=grupp4
-pwd=grupp4
-port=5433
-backend=postgresql
