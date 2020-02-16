@@ -69,7 +69,6 @@ namespace Loading
                 Console.CursorVisible = true;
                 //Console.SetCursorPosition(origCol, origRow);
                 return;
-
             }
         }
 

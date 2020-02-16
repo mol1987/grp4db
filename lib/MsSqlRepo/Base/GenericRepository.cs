@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using Npgsql;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
+
 
 /// <summary>
 /// A generic repository. Basic CRUD operations.
@@ -38,8 +40,21 @@ namespace MsSqlRepo
             string port = Helper.Globals.Get("port");
 
             string connectionString = $"Data Source={host};Initial Catalog={database};User Id={username};Password={password};";
-            
             return new SqlConnection(connectionString);
+        }
+        private NpgsqlConnection SqlConnectionPost()
+        {
+            // Fetching from locally stored secrets
+            string host = Helper.Globals.Get("host");
+            string database = Helper.Globals.Get("db");
+            string username = Helper.Globals.Get("usr");
+            string password = Helper.Globals.Get("pwd");
+            string port = Helper.Globals.Get("port");
+
+            string connectionString =  $"Host={host};Username={username};Password={password};Database={database};Pooling=true; Port={port}";
+            
+            //Console.WriteLine(connectionString);
+            return new NpgsqlConnection(connectionString);
         }
         /// <summary>
         /// Open new connection and return it for use
@@ -47,7 +62,12 @@ namespace MsSqlRepo
         /// <returns></returns>
         protected IDbConnection CreateConnection()
         {
-            var conn = SqlConnection();
+            string backend = Helper.Globals.Get("backend");
+            IDbConnection conn = null;
+            if (backend == "postgresql")
+                conn = SqlConnectionPost();
+            else if (backend == "sql-server")
+                conn = SqlConnection();
             conn.Open();
             return conn;
         }
