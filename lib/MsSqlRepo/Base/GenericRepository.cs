@@ -40,7 +40,6 @@ namespace MsSqlRepo
             string port = Helper.Globals.Get("port");
 
             string connectionString = $"Data Source={host};Initial Catalog={database};User Id={username};Password={password};";
-            Console.WriteLine(connectionString);
             return new SqlConnection(connectionString);
         }
         private NpgsqlConnection SqlConnectionPost()
@@ -52,11 +51,9 @@ namespace MsSqlRepo
             string password = Helper.Globals.Get("pwd");
             string port = Helper.Globals.Get("port");
 
-            string connectionString = $"Data Source={host};Initial Catalog={database};User Id={username};Password={password};";
-            connectionString = $"User ID={username}; Password={password}; Host={host}; Port={port}; Database={database};Pooling=true; Min Pool Size=0; Max Pool Size=100; Connection Lifetime=0;";
-            connectionString = $"Host={host};Username={username};Password={password};Database={database};sslmode=Require;Trust Server Certificate=true;";
-            connectionString = $"Host={host};Username={username};Password={password};Database={database};Pooling=true; Port={port}";
-            Console.WriteLine(connectionString);
+            string connectionString =  $"Host={host};Username={username};Password={password};Database={database};Pooling=true; Port={port}";
+            
+            //Console.WriteLine(connectionString);
             return new NpgsqlConnection(connectionString);
         }
         /// <summary>
@@ -65,7 +62,12 @@ namespace MsSqlRepo
         /// <returns></returns>
         protected IDbConnection CreateConnection()
         {
-            var conn = SqlConnectionPost();
+            string backend = Helper.Globals.Get("backend");
+            IDbConnection conn = null;
+            if (backend == "postgresql")
+                conn = SqlConnectionPost();
+            else if (backend == "sql-server")
+                conn = SqlConnection();
             conn.Open();
             return conn;
         }
