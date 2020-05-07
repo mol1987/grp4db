@@ -41,10 +41,10 @@ namespace MsSqlRepo
         {
             using (var connection = base.CreateConnection())
             {
-                IEnumerable<Articles> articles = await connection.QueryAsync<Articles>("getArticles", commandType: CommandType.StoredProcedure);
+                IEnumerable<Articles> articles = (await connection.QueryAsync<Articles>($"SELECT * FROM Articles"));
                 foreach (Articles article in articles)
                 {
-                    article.Ingredients = (await connection.QueryAsync<Ingredients>("getArticleIngredients", new { articleID = article.ID }, commandType: CommandType.StoredProcedure)).ToList();
+                    article.Ingredients = (await connection.QueryAsync<Ingredients>($"SELECT Ingredients.* FROM Articles INNER JOIN ArticleIngredients ON Articles.ID = ArticleIngredients.ArticleID inner join Ingredients on Ingredients.ID = ArticleIngredients.IngredientID WHERE Articles.ID = @articleID", new { articleID = article.ID })).ToList();
                 }
                 return articles;
             }

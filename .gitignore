@@ -330,3 +330,5 @@ ASALocalRun/
 .mfractor/
 
 .env
+/ - kopia.env
+/.env postgre

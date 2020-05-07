@@ -13,13 +13,14 @@ Group project w/ Newton-Grupp-4
 
 ## Setup
 1. Lägg till .env i root foldern, ska innehålla
-2. Fill in; (Byt ut allt i klamrar-[])
+2. Fill in; (Byt ut allt i klamrar-[]) (backend=sql-server or backend=postgresql)
 ```
 host=[..]
 db=[..]
 usr=[..]
 pwd=[..]
 port=[..]
+backend=[..]
 ```
 
 

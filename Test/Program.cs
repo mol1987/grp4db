@@ -191,21 +191,6 @@ namespace Test
             await order.insertOrder();
 
             List<Articles> orderListArticles = new List<Articles>();
-            orderListArticles = await orderListArticles.getArticlesFromOrder(order);
-            foreach (var item in orderListArticles)
-            {
-               
-                Console.WriteLine("\n" +item.Name + " " + item.Type) ;
-               
-                
-                foreach (var item2 in item.Ingredients)
-                {
-                    Console.Write(item2.Name.Trim() + ", ");
-                    
-
-                }
-               
-            }
             
         }
 
@@ -241,10 +226,14 @@ namespace Test
             Console.Write("{0}\t{1}\t{2}\t{3}\t{4}\n", "ID", "TimeCreated", "Orderstatus", "Price", "CustomerID");
             orders.ForEach(order => Console.Write("{0}\t{1}\t{2}\t{3}\t{4}\n", order.ID, order.TimeCreated, order.Orderstatus, order.Price, order.CustomerID));
 
+
+            //Orders order = (await repoOrders.GetAsync(4));
+
+
             //await repoOrders.UpdateAsync(new Orders() {ID = 12, Orderstatus = 0, Price = 124, CustomerID = 1 });
 
             //await repoIngredients.InsertCustomIngredientsAsync(orders.First(), articles.First(), articles.First().Ingredients);
-            Orders order = orders.First() ;
+            //Orders order = orders.First() ;
             //List<Articles> tempArticles = articles.GetRange(0, 2);
             //await repoOrders.MakeOrderAsync(order, tempArticles);
 
@@ -257,8 +246,8 @@ namespace Test
             //        Console.Write(item2.Name.Trim() + ", ");
             //    }
             //}
-            
-            await General.articlesRepo.InsertAsync(articles[0]);
+            //articles[0].ID = 71;
+            //await General.articlesRepo.UpdateAsync(articles[0]);
 
         }
     }
